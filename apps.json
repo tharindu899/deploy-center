@@ -1,0 +1,48 @@
+{
+  "apps": [
+    {
+      "slug": "budget-manager",
+      "name": "Budget Manager",
+      "description": "Track expenses and monthly plans.",
+      "category": "Finance",
+      "version": "1.2.0",
+      "rating": 4.6,
+      "path": "apps/budget-manager/index.html",
+      "thumbnail": "assets/thumbnails/budget-manager.svg",
+      "tags": ["money", "tracker", "finance"]
+    },
+    {
+      "slug": "movie-ui",
+      "name": "Movie UI",
+      "description": "Browse movies with stylish cards.",
+      "category": "Entertainment",
+      "version": "2.0.1",
+      "rating": 4.3,
+      "path": "apps/movie-ui/index.html",
+      "thumbnail": "assets/thumbnails/movie-ui.svg",
+      "tags": ["movies", "ui", "media"]
+    },
+    {
+      "slug": "unlock-manager",
+      "name": "Unlock Manager",
+      "description": "Manage unlock workflows and statuses.",
+      "category": "Tools",
+      "version": "1.0.5",
+      "rating": 4.1,
+      "path": "apps/unlock-manager/index.html",
+      "thumbnail": "assets/thumbnails/unlock-manager.svg",
+      "tags": ["utility", "manager"]
+    },
+    {
+      "slug": "another-app",
+      "name": "Another App",
+      "description": "General purpose utility app template.",
+      "category": "Utilities",
+      "version": "0.9.0",
+      "rating": 4.0,
+      "path": "apps/another-app/index.html",
+      "thumbnail": "assets/thumbnails/another-app.svg",
+      "tags": ["starter", "template"]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#111827" />
+    <title>Deploy Center • Web Hub</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg-gradient"></div>
+    <header class="topbar glass">
+      <div class="brand">
+        <div class="logo">DC</div>
+        <div>
+          <h1>Deploy Center</h1>
+          <p>tharindu899/deploy-center</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="themeToggle" class="btn icon-btn" title="Toggle theme (T)">🌓</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="stats-grid" id="stats"></section>
+
+      <section class="toolbar glass">
+        <div class="search-wrap">
+          <input id="searchInput" type="search" placeholder="Search apps, categories, tags... ( / )" autocomplete="off" />
+          <ul id="suggestions" class="suggestions"></ul>
+        </div>
+        <select id="categoryFilter">
+          <option value="all">All Categories</option>
+        </select>
+      </section>
+
+      <section id="recentSection" class="section-block">
+        <h2>Recent Apps</h2>
+        <div id="recentGrid" class="cards-grid"></div>
+      </section>
+
+      <section class="section-block">
+        <h2>All Apps</h2>
+        <div id="appsGrid" class="cards-grid"></div>
+      </section>
+    </main>
+
+    <button id="installBtn" class="install-fab hidden" title="Install App">Install</button>
+
+    <div id="previewModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-content glass">
+        <button id="closeModal" class="btn close-btn">✕</button>
+        <h3 id="previewTitle">Preview</h3>
+        <iframe id="previewFrame" loading="lazy" title="App Preview"></iframe>
+      </div>
+    </div>
+
+    <template id="cardTemplate">
+      <article class="app-card glass">
+        <img class="thumb" alt="" />
+        <div class="card-body">
+          <div class="title-row">
+            <h3></h3>
+            <button class="btn fav-btn" title="Toggle favorite">☆</button>
+          </div>
+          <p class="desc"></p>
+          <div class="meta">
+            <span class="badge category"></span>
+            <span class="version"></span>
+          </div>
+          <div class="stars"></div>
+          <div class="visits"></div>
+          <div class="actions">
+            <a class="btn open-btn" target="_blank" rel="noopener">Open</a>
+            <button class="btn preview-btn">Preview</button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
