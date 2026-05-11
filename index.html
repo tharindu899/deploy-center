@@ -1,85 +1,261 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#111827" />
-    <title>Deploy Center • Web Hub</title>
-    <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="bg-gradient"></div>
-    <header class="topbar glass">
-      <div class="brand">
-        <div class="logo">DC</div>
-        <div>
-          <h1>Deploy Center</h1>
-          <p>tharindu899/deploy-center</p>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050b18" />
+  <meta name="description" content="Deploy Center – Modern Web Hub Dashboard by tharindu899" />
+  <title>Deploy Center • Web Hub</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background layers -->
+  <div class="bg-space"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-scanlines"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- NAVBAR -->
+  <header class="topbar" id="topbar">
+    <div class="brand">
+      <div class="logo-mark">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="24,4 44,36 4,36" fill="none" stroke="url(#lg1)" stroke-width="2.5"/>
+          <polygon points="24,14 36,34 12,34" fill="url(#lg2)" opacity=".3"/>
+          <defs>
+            <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#00f5ff"/>
+              <stop offset="1" stop-color="#bf5af2"/>
+            </linearGradient>
+            <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#00f5ff"/>
+              <stop offset="1" stop-color="#bf5af2"/>
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
-      <div class="top-actions">
-        <button id="themeToggle" class="btn icon-btn" title="Toggle theme (T)">🌓</button>
-      </div>
-    </header>
-
-    <main class="container">
-      <section class="stats-grid" id="stats"></section>
-
-      <section class="toolbar glass">
-        <div class="search-wrap">
-          <input id="searchInput" type="search" placeholder="Search apps, categories, tags... ( / )" autocomplete="off" />
-          <ul id="suggestions" class="suggestions"></ul>
-        </div>
-        <select id="categoryFilter">
-          <option value="all">All Categories</option>
-        </select>
-      </section>
-
-      <section id="recentSection" class="section-block">
-        <h2>Recent Apps</h2>
-        <div id="recentGrid" class="cards-grid"></div>
-      </section>
-
-      <section class="section-block">
-        <h2>All Apps</h2>
-        <div id="appsGrid" class="cards-grid"></div>
-      </section>
-    </main>
-
-    <button id="installBtn" class="install-fab hidden" title="Install App">Install</button>
-
-    <div id="previewModal" class="modal hidden" aria-hidden="true">
-      <div class="modal-content glass">
-        <button id="closeModal" class="btn close-btn">✕</button>
-        <h3 id="previewTitle">Preview</h3>
-        <iframe id="previewFrame" loading="lazy" title="App Preview"></iframe>
+      <div class="brand-text">
+        <span class="brand-title">DEPLOY CENTER</span>
+        <span class="brand-sub">tharindu899 / deploy-center</span>
       </div>
     </div>
 
-    <template id="cardTemplate">
-      <article class="app-card glass">
-        <img class="thumb" alt="" />
-        <div class="card-body">
-          <div class="title-row">
-            <h3></h3>
-            <button class="btn fav-btn" title="Toggle favorite">☆</button>
-          </div>
-          <p class="desc"></p>
-          <div class="meta">
-            <span class="badge category"></span>
-            <span class="version"></span>
-          </div>
-          <div class="stars"></div>
-          <div class="visits"></div>
-          <div class="actions">
-            <a class="btn open-btn" target="_blank" rel="noopener">Open</a>
-            <button class="btn preview-btn">Preview</button>
-          </div>
-        </div>
-      </article>
-    </template>
+    <div class="top-actions">
+      <button id="themeToggle" class="icon-btn" title="Toggle Theme (T)" aria-label="Toggle Theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a class="icon-btn" href="https://github.com/tharindu899/deploy-center" target="_blank" rel="noopener" title="GitHub Repo" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+      </a>
+    </div>
+  </header>
 
-    <script src="script.js"></script>
-  </body>
+  <!-- HERO BANNER -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><span class="pulse-dot"></span> LIVE SYSTEM</div>
+      <h1 class="hero-title">WEB HUB<br><span class="gradient-text">COMMAND CENTER</span></h1>
+      <p class="hero-desc">Your personal app deployment dashboard. Auto-detected from GitHub — browse, preview, and launch.</p>
+    </div>
+    <div class="hero-visual">
+      <div class="orbit-ring ring1"></div>
+      <div class="orbit-ring ring2"></div>
+      <div class="orbit-ring ring3"></div>
+      <div class="orbit-dot dot1"></div>
+      <div class="orbit-dot dot2"></div>
+    </div>
+  </section>
+
+  <main class="container">
+
+    <!-- STATS -->
+    <section class="stats-grid" id="stats" aria-label="Dashboard Statistics"></section>
+
+    <!-- TOOLBAR -->
+    <section class="toolbar" aria-label="Search and Filter">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="searchInput" type="search" placeholder="Search apps, categories, tags…  [ / ]" autocomplete="off" spellcheck="false" />
+        <kbd class="shortcut-hint">/</kbd>
+        <ul id="suggestions" class="suggestions" role="listbox" aria-label="Search suggestions"></ul>
+      </div>
+      <div class="filter-group">
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="all">⬡ All Categories</option>
+        </select>
+        <button id="favFilterBtn" class="filter-btn" title="Show Favorites Only" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          Favorites
+        </button>
+      </div>
+    </section>
+
+    <!-- LOADING SKELETON -->
+    <div id="loadingState" class="loading-state">
+      <div class="skeleton-grid">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+      <div class="loading-text">
+        <span class="loading-label" id="loadingLabel">Scanning repositories…</span>
+        <div class="loading-bar"><div class="loading-fill" id="loadingFill"></div></div>
+      </div>
+    </div>
+
+    <!-- RECENT APPS -->
+    <section id="recentSection" class="section-block hidden" aria-label="Recently Opened Apps">
+      <div class="section-header">
+        <h2><span class="section-icon">⏱</span> Recent</h2>
+        <span class="section-count" id="recentCount"></span>
+      </div>
+      <div id="recentGrid" class="cards-grid horizontal-scroll"></div>
+    </section>
+
+    <!-- FAVORITES -->
+    <section id="favSection" class="section-block hidden" aria-label="Favorite Apps">
+      <div class="section-header">
+        <h2><span class="section-icon">★</span> Favorites</h2>
+        <span class="section-count" id="favCount"></span>
+      </div>
+      <div id="favGrid" class="cards-grid horizontal-scroll"></div>
+    </section>
+
+    <!-- ALL APPS -->
+    <section class="section-block" aria-label="All Apps">
+      <div class="section-header">
+        <h2><span class="section-icon">⬡</span> All Apps</h2>
+        <span class="section-count" id="appsCount"></span>
+      </div>
+      <div id="appsGrid" class="cards-grid main-grid"></div>
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon">⬡</div>
+        <p>No apps match your search.</p>
+        <button onclick="document.getElementById('searchInput').value=''; window.applyFilters();" class="btn-reset">Clear Search</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FAB INSTALL BUTTON -->
+  <button id="installBtn" class="install-fab hidden" aria-label="Install App as PWA">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    <span>Install</span>
+  </button>
+
+  <!-- KEYBOARD SHORTCUTS HINT -->
+  <div class="shortcuts-bar" id="shortcutsBar">
+    <span><kbd>/</kbd> Search</span>
+    <span><kbd>T</kbd> Theme</span>
+    <span><kbd>F</kbd> Favorites</span>
+    <span><kbd>Esc</kbd> Close</span>
+  </div>
+
+  <!-- PREVIEW MODAL -->
+  <div id="previewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+    <div class="modal-backdrop"></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-chip" id="previewCategory"></span>
+          <h3 id="previewTitle">Preview</h3>
+        </div>
+        <div class="modal-controls">
+          <a id="previewOpenLink" class="btn-modal-open" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            Open
+          </a>
+          <button id="closeModal" class="btn-modal-close" aria-label="Close preview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-frame-wrap">
+        <div class="frame-loading" id="frameLoading">
+          <div class="frame-spinner"></div>
+          <span>Loading preview…</span>
+        </div>
+        <iframe id="previewFrame" loading="lazy" title="App Preview" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP CARD TEMPLATE -->
+  <template id="cardTemplate">
+    <article class="app-card">
+      <div class="card-glow"></div>
+      <div class="card-thumb-wrap">
+        <img class="thumb" alt="" loading="lazy" />
+        <div class="thumb-overlay">
+          <button class="btn-preview-hover">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+            </svg>
+            Preview
+          </button>
+        </div>
+        <div class="card-category-chip category-chip"></div>
+      </div>
+      <div class="card-body">
+        <div class="title-row">
+          <h3 class="card-name"></h3>
+          <button class="fav-btn" title="Toggle favorite" aria-label="Toggle favorite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </button>
+        </div>
+        <p class="card-desc"></p>
+        <div class="card-meta">
+          <div class="stars" aria-label="Rating"></div>
+          <span class="version-badge"></span>
+        </div>
+        <div class="visits-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="visit-icon">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span class="visits-label"></span>
+        </div>
+        <div class="card-actions">
+          <a class="btn-open" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            Launch
+          </a>
+          <button class="btn-preview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            Preview
+          </button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
 </html>

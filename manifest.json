@@ -1,12 +1,28 @@
 {
   "name": "Deploy Center",
-  "short_name": "DeployCenter",
+  "short_name": "DeployHub",
+  "description": "Modern Web Hub Dashboard — tharindu899",
   "start_url": "/deploy-center/",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#111827",
+  "orientation": "any",
+  "background_color": "#030810",
+  "theme_color": "#050b18",
+  "categories": ["utilities", "productivity"],
   "icons": [
-    { "src": "assets/logo.svg", "sizes": "192x192", "type": "image/svg+xml" },
-    { "src": "assets/logo.svg", "sizes": "512x512", "type": "image/svg+xml" }
+    { "src": "assets/logo.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "assets/logo.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Budget Manager",
+      "url": "/deploy-center/apps/budget-manager/",
+      "description": "Track expenses"
+    },
+    {
+      "name": "Movie UI",
+      "url": "/deploy-center/apps/movie-ui/",
+      "description": "Browse movies"
+    }
   ]
 }
