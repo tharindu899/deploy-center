@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PocketLedger — Dev Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css"/>
+<style>
+:root{--bg:#0d0f14;--s:#161a23;--s2:#1e2330;--s3:#252b3a;--b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.12);--t1:#f0f2f8;--t2:#8a90a8;--t3:#555c75;--accent:#4f8ef7;--green:#30d48a;--red:#f05c6e;--amber:#f5a623;--purple:#a78bfa;--teal:#2dd4bf;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;padding:0;overflow-x:hidden;}
+.hero{background:linear-gradient(135deg,#0d1630 0%,#0d0f14 60%);padding:60px 24px 40px;text-align:center;border-bottom:1px solid var(--b2);}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,0.15);border:1px solid rgba(79,142,247,0.3);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:16px;letter-spacing:0.05em;}
+.hero h1{font-size:36px;font-weight:700;letter-spacing:-0.5px;margin-bottom:10px;}
+.hero p{color:var(--t2);font-size:15px;max-width:500px;margin:0 auto;}
+.container{max-width:900px;margin:0 auto;padding:40px 24px;}
+.section{margin-bottom:50px;}
+.sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--b2);}
+h2{font-size:20px;font-weight:700;margin-bottom:16px;}
+h3{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:10px;}
+
+/* FEATURE GRID */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+.feat-card{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:16px;}
+.feat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
+.feat-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.feat-desc{font-size:11px;color:var(--t3);line-height:1.5;}
+
+/* FILE TREE */
+.tree{background:var(--s);border:1px solid var(--b);border-radius:16px;padding:20px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.9;overflow-x:auto;}
+.tree-folder{color:var(--amber);}
+.tree-file{color:var(--t2);}
+.tree-comment{color:var(--t3);font-style:italic;}
+.tree-new{color:var(--green);}
+.tree-special{color:var(--accent);}
+.ind1{padding-left:20px;}
+.ind2{padding-left:40px;}
+.ind3{padding-left:60px;}
+.ind4{padding-left:80px;}
+.ind5{padding-left:100px;}
+
+/* CODE BLOCKS */
+.code-block{background:var(--s);border:1px solid var(--b);border-radius:14px;overflow:hidden;margin-bottom:16px;}
+.code-header{background:var(--s2);padding:10px 16px;font-size:12px;font-weight:600;color:var(--t2);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b);}
+.code-header .lang{background:var(--s3);color:var(--accent);font-family:'DM Mono',monospace;padding:2px 8px;border-radius:4px;font-size:10px;}
+.code-body{padding:16px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.7;white-space:pre;overflow-x:auto;color:var(--t1);}
+.c-key{color:#f8a7d3;}
+.c-str{color:#a3e6b2;}
+.c-com{color:var(--t3);}
+.c-num{color:var(--amber);}
+.c-fn{color:var(--accent);}
+.c-type{color:var(--purple);}
+
+/* TABS */
+.tab-bar{display:flex;gap:4px;margin-bottom:20px;background:var(--s);padding:5px;border-radius:12px;border:1px solid var(--b);overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;}
+.tab-bar::-webkit-scrollbar{display:none;}
+.tab{white-space:nowrap;min-width:max-content;padding:10px 16px;}
+.tab{flex:1;padding:8px;border-radius:8px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;color:var(--t3);transition:all 0.15s;}
+.tab.active{background:var(--accent);color:#fff;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* PROMPT BOX */
+.prompt-box{background:var(--s);border:1px solid rgba(79,142,247,0.3);border-radius:16px;padding:22px;position:relative;}
+.prompt-box p{color:var(--t2);font-size:13px;line-height:1.8;margin-bottom:12px;}
+.prompt-box strong{color:var(--t1);}
+.prompt-box h4{font-size:14px;font-weight:700;color:var(--accent);margin:16px 0 8px;}
+
+/* BADGE ROW */
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.badge{display:flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-blue{background:rgba(79,142,247,0.15);color:var(--accent);border:1px solid rgba(79,142,247,0.25);}
+.badge-green{background:rgba(48,212,138,0.15);color:var(--green);border:1px solid rgba(48,212,138,0.25);}
+.badge-amber{background:rgba(245,166,35,0.15);color:var(--amber);border:1px solid rgba(245,166,35,0.25);}
+.badge-purple{background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.25);}
+.badge-red{background:rgba(240,92,110,0.15);color:var(--red);border:1px solid rgba(240,92,110,0.25);}
+.badge-teal{background:rgba(45,212,191,0.15);color:var(--teal);border:1px solid rgba(45,212,191,0.25);}
+
+.step-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.step-list li{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:12px 16px;display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--t2);}
+.step-num{min-width:24px;height:24px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.step-list li b{color:var(--t1);}
+.divider{height:1px;background:var(--b);margin:30px 0;}
+
+/* RESPONSIVE FIXES */
+.container,
+.hero,
+.section,
+.prompt-box,
+.code-block,
+.tree,
+.feat-grid{
+    width:100%;
+    max-width:100%;
+}
+
+.feat-grid{
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+}
+
+.tree,
+.code-body{
+    white-space:pre;
+    overflow-x:auto;
+    overflow-y:hidden;
+}
+
+.badge-row{
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    padding-bottom:6px;
+    scrollbar-width:none;
+}
+
+.badge-row::-webkit-scrollbar{
+    display:none;
+}
+
+.badge{
+    white-space:nowrap;
+    flex-shrink:0;
+}
+
+@media (max-width:768px){
+    .hero{
+        padding:40px 16px 28px;
+    }
+
+    .hero h1{
+        font-size:28px;
+        line-height:1.2;
+    }
+
+    .container{
+        padding:24px 14px;
+    }
+
+    .feat-grid{
+        grid-template-columns:1fr;
+    }
+
+    .code-body,
+    .tree{
+        font-size:11px;
+    }
+
+    .step-list li{
+        flex-direction:row;
+        align-items:flex-start;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge"><i class="ti ti-coins"></i> PocketLedger — Money Manager</div>
+  <a href="index.html" style="
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:20px;
+    background:rgba(79,142,247,0.15);
+    border:1px solid rgba(79,142,247,0.3);
+    border-radius:20px;
+    padding:7px 18px;
+    font-size:13px;
+    font-weight:600;
+    color:#4f8ef7;
+    text-decoration:none;
+  ">← Back to App</a>
+  <h1>Complete Build Guide</h1>
+  <p>Full prompt, file structure, GitHub CI/CD, and feature specification for your Android Money Manager app</p>
+  <div class="badge-row" style="justify-content:center;margin-top:20px;">
+    <span class="badge badge-blue"><i class="ti ti-brand-android"></i> Android (Kotlin)</span>
+    <span class="badge badge-green"><i class="ti ti-brand-google"></i> Google Auth + Drive</span>
+    <span class="badge badge-amber"><i class="ti ti-refresh"></i> Auto Updates</span>
+    <span class="badge badge-purple"><i class="ti ti-moon"></i> Dark + Light Theme</span>
+    <span class="badge badge-teal"><i class="ti ti-bell"></i> Smart Notifications</span>
+    <span class="badge badge-red"><i class="ti ti-clock-dollar"></i> Loan Manager</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ======================== FULL PROMPT ======================== -->
+<div class="section">
+  <div class="sec-title"><i class="ti ti-message-code"></i> AI Build Prompt</div>
+  <div class="prompt-box">
+    <h4>Copy this entire prompt into an AI coding tool (Cursor, Claude, GitHub Copilot):</h4>
+    <p>Build a complete Android money manager application called <strong>PocketLedger</strong> using <strong>Kotlin, Jetpack Compose, MVVM architecture, Room Database, Hilt dependency injection, and Kotlin Coroutines</strong>. The app must include every feature listed below.</p>
+
+    <h4>Authentication &amp; Cloud</h4>
+    <p><strong>Google Sign-In</strong> via Firebase Authentication on the splash/login screen. After login show the user's name, email, and profile photo. Implement <strong>Google Drive API v3</strong> backup: auto-sync every 24 hours and on-demand manual sync. Store backup as encrypted JSON in the user's Drive app folder. Show sync status and last backup time in Settings.</p>
+
+    <h4>Multiple Accounts</h4>
+    <p>Support unlimited accounts: <strong>Bank Account, Cash Wallet, Credit Card, Mobile Wallet, Investment, Savings</strong>. Each account has a name, icon, color, currency, and starting balance. Show account balance cards on Dashboard with horizontal scroll. Include a dedicated Accounts screen with net worth summary. Support <strong>inter-account transfers</strong> with a from/to selector and optional notes.</p>
+
+    <h4>Transactions</h4>
+    <p>Full transaction CRUD: <strong>Expense, Income, Transfer, Bank Transfer</strong>. Fields: amount, category, account, date, time, note, attachment (photo/receipt). Implement <strong>recurring transactions</strong> (daily, weekly, monthly, custom). Support <strong>split transactions</strong> across categories. Show transactions grouped by date with running balance. Include search and advanced filter (date range, account, category, amount range).</p>
+
+    <h4>Categories</h4>
+    <p>Pre-built categories with custom icons: <strong>Food &amp; Dining, Transport, Shopping, Health, Utilities, Entertainment, Education, Travel, Salary, Freelance, Investment, Rent, Loan, Insurance, Gifts, Subscriptions, Household, Personal Care, Other</strong>. Allow user to create, edit, delete, and reorder custom categories. Each category has a color and icon from Material Icons or custom SVG.</p>
+
+    <h4>Loans Manager</h4>
+    <p>Full <strong>Loan/Debt tracker</strong>: lent (you gave money) and borrowed (you owe money). Fields: person name, amount, interest rate (optional), due date, partial payment history, notes. Show progress bar for repayment. Send <strong>reminder notifications</strong> before due dates (1 week, 3 days, 1 day). Summary card showing total lent vs owed.</p>
+
+    <h4>Analytics &amp; Reports</h4>
+    <p>Dashboard with monthly income/expense/savings summary cards. <strong>Bar chart</strong> for 6-month spending trend. <strong>Donut/pie chart</strong> for category breakdown. <strong>Line chart</strong> for net worth over time. <strong>Budget progress bars</strong> per category. Monthly/weekly/custom date range selector. Export reports as <strong>CSV, PDF, Excel (.xlsx)</strong>.</p>
+
+    <h4>Budgets &amp; Goals</h4>
+    <p>Set monthly budgets per category. Visual budget gauge showing used vs remaining. Alert when 80% and 100% reached. <strong>Savings goals</strong> with target amount, deadline, and contribution tracking. Progress ring animation for goals.</p>
+
+    <h4>Bottom Navigation</h4>
+    <p>5-tab bottom nav: <strong>Home, Analytics, [+FAB in center], Loans, Settings</strong>. The center button is a large floating action button elevated above the nav bar. Tapping it opens an animated bottom sheet with options: Add Expense, Add Income, Transfer, Bank Transfer, Add Loan, Scan Receipt.</p>
+
+    <h4>Notifications &amp; Sounds</h4>
+    <p>Full notification system using <strong>WorkManager + NotificationCompat</strong>: bill reminders, budget alerts (80%/100%), loan due reminders, recurring transaction alerts, Google Drive sync status, and <strong>in-app update available</strong> notification. Play a distinct sound on each successful transaction (cash register sound). All notification categories toggleable in Settings. Use notification channels for Android 8+.</p>
+
+    <h4>In-App Updates</h4>
+    <p>Integrate <strong>Google Play In-App Update API (Flexible update)</strong>. Check for updates on app launch. Show a non-intrusive banner on Dashboard when update is available. Show update notification in notification panel. Allow user to dismiss and update later.</p>
+
+    <h4>Themes</h4>
+    <p>Full <strong>Material Design 3 Dynamic Color</strong> support. Light and Dark themes. Theme selector in Settings: System default, Light, Dark. Smooth animated theme transition. Custom accent color picker (6 preset colors + custom).</p>
+
+    <h4>Security</h4>
+    <p>Optional <strong>Biometric lock</strong> (fingerprint/face) on app open using BiometricPrompt. PIN fallback. Auto-lock after configurable timeout (1 min, 5 min, 15 min). Encrypted Room database using SQLCipher.</p>
+
+    <h4>Additional Features</h4>
+    <p><strong>Scan Receipt</strong> using ML Kit text recognition to auto-fill transaction amount and merchant. <strong>Currency converter</strong> with live exchange rates. <strong>CSV/Excel import</strong> for bulk transaction upload. <strong>Widget</strong> showing balance and quick-add button. <strong>Multi-currency</strong> support per account. <strong>Dark/Light auto-schedule</strong> by time of day.</p>
+
+    <h4>Tech Stack Requirements</h4>
+    <p>Use: <strong>Kotlin 1.9+, Compose BOM latest, Room 2.6+, Hilt 2.50+, Navigation Compose, DataStore Preferences, WorkManager, Coil for images, MPAndroidChart or Compose Charts, Firebase Auth, Google Drive API, Play In-App Update, BiometricPrompt, ML Kit Text Recognition, Retrofit + OkHttp for exchange rates, Accompanist libraries</strong>. Min SDK 26, Target SDK 34. Follow clean architecture: data / domain / presentation layers. Write unit tests for ViewModels and use-cases with JUnit5 + MockK. Write UI tests with Compose Testing.</p>
+  </div>
+</div>
+
+<!-- ======================== FEATURES ======================== -->
+<div class="section">
+  <div class="sec-title"><i class="ti ti-star"></i> Feature Overview</div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(79,142,247,0.12);color:#4f8ef7;"><i class="ti ti-brand-google"></i></div>
+      <div class="feat-name">Google Login</div>
+      <div class="feat-desc">Firebase Auth with Google Sign-In. Auto-login, profile sync, secure token refresh.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(48,212,138,0.12);color:#30d48a;"><i class="ti ti-cloud-upload"></i></div>
+      <div class="feat-name">Drive Backup</div>
+      <div class="feat-desc">Auto & manual backup to Google Drive App Folder. Encrypted JSON. Restore anytime.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(245,166,35,0.12);color:#f5a623;"><i class="ti ti-building-bank"></i></div>
+      <div class="feat-name">Multiple Accounts</div>
+      <div class="feat-desc">Unlimited bank, cash, wallet, credit card accounts. Net worth dashboard.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(240,92,110,0.12);color:#f05c6e;"><i class="ti ti-clock-dollar"></i></div>
+      <div class="feat-name">Loan Tracker</div>
+      <div class="feat-desc">Lend & borrow tracking with due dates, interest, partial payments & reminders.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(167,139,250,0.12);color:#a78bfa;"><i class="ti ti-chart-pie"></i></div>
+      <div class="feat-name">Analytics</div>
+      <div class="feat-desc">Bar, pie, line charts. Budget progress bars. Monthly/weekly reports. Export CSV/PDF.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(45,212,191,0.12);color:#2dd4bf;"><i class="ti ti-bell-ringing"></i></div>
+      <div class="feat-name">Smart Notifications</div>
+      <div class="feat-desc">Budget alerts, loan reminders, update alerts, sync status. Custom sounds per event.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(244,114,182,0.12);color:#f472b6;"><i class="ti ti-refresh"></i></div>
+      <div class="feat-name">Auto Updates</div>
+      <div class="feat-desc">Google Play In-App Update API. Banner + notification on new version available.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(79,142,247,0.12);color:#4f8ef7;"><i class="ti ti-arrows-exchange"></i></div>
+      <div class="feat-name">Bank Transfer</div>
+      <div class="feat-desc">Inter-account transfers, bank-to-bank with reference number and notes.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(48,212,138,0.12);color:#30d48a;"><i class="ti ti-fingerprint"></i></div>
+      <div class="feat-name">Biometric Lock</div>
+      <div class="feat-desc">Fingerprint/Face unlock. PIN fallback. Auto-lock timeout. SQLCipher encryption.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(245,166,35,0.12);color:#f5a623;"><i class="ti ti-scan"></i></div>
+      <div class="feat-name">Scan Receipt</div>
+      <div class="feat-desc">ML Kit OCR auto-fills amount and merchant from receipt photo.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(167,139,250,0.12);color:#a78bfa;"><i class="ti ti-moon"></i></div>
+      <div class="feat-name">Dark / Light Theme</div>
+      <div class="feat-desc">Material You dynamic colors. System/manual toggle. Custom accent picker.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(45,212,191,0.12);color:#2dd4bf;"><i class="ti ti-target"></i></div>
+      <div class="feat-name">Budget & Goals</div>
+      <div class="feat-desc">Per-category monthly budgets. Savings goals with ring progress and deadlines.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== FILE STRUCTURE ======================== -->
+<div class="section">
+  <div class="sec-title"><i class="ti ti-folder-open"></i> Complete File Structure</div>
+  <div class="tree">
+<span class="tree-special">PocketLedger/</span>                              <span class="tree-comment"># Root project</span>
+├── <span class="tree-folder">.github/</span>
+│   └── <span class="tree-folder">workflows/</span>
+│       ├── <span class="tree-new">build-release.yml</span>              <span class="tree-comment"># Main CI/CD pipeline</span>
+│       ├── <span class="tree-new">pr-check.yml</span>                   <span class="tree-comment"># PR validation checks</span>
+│       └── <span class="tree-new">nightly.yml</span>                    <span class="tree-comment"># Nightly test builds</span>
+├── <span class="tree-folder">app/</span>
+│   ├── <span class="tree-file">build.gradle.kts</span>
+│   ├── <span class="tree-file">google-services.json</span>           <span class="tree-comment"># Firebase config (gitignored)</span>
+│   ├── <span class="tree-folder">src/</span>
+│   │   ├── <span class="tree-folder">main/</span>
+│   │   │   ├── <span class="tree-file">AndroidManifest.xml</span>
+│   │   │   ├── <span class="tree-folder">kotlin/com/pocketledger/</span>
+│   │   │   │<span class="ind1">
+│   │   │   │   <span class="tree-comment">## ── DATA LAYER ──────────────────────────────</span></span>
+│   │   │   │   ├── <span class="tree-folder">data/</span>
+│   │   │   │   │   ├── <span class="tree-folder">local/</span>
+│   │   │   │   │   │   ├── <span class="tree-folder">dao/</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">TransactionDao.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">AccountDao.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">CategoryDao.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">LoanDao.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">BudgetDao.kt</span>
+│   │   │   │   │   │   │   └── <span class="tree-new">GoalDao.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-folder">entity/</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">TransactionEntity.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">AccountEntity.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">CategoryEntity.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">LoanEntity.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">LoanPaymentEntity.kt</span>
+│   │   │   │   │   │   │   ├── <span class="tree-new">BudgetEntity.kt</span>
+│   │   │   │   │   │   │   └── <span class="tree-new">GoalEntity.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">AppDatabase.kt</span>       <span class="tree-comment"># Room + SQLCipher</span>
+│   │   │   │   │   ├── <span class="tree-folder">remote/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">DriveBackupService.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">ExchangeRateApi.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">FirebaseAuthService.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">repository/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">TransactionRepositoryImpl.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AccountRepositoryImpl.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">LoanRepositoryImpl.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">BudgetRepositoryImpl.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">BackupRepositoryImpl.kt</span>
+│   │   │   │   │   └── <span class="tree-folder">preferences/</span>
+│   │   │   │   │       └── <span class="tree-new">UserPreferences.kt</span>    <span class="tree-comment"># DataStore</span>
+│   │   │   │<span class="ind1">
+│   │   │   │   <span class="tree-comment">## ── DOMAIN LAYER ─────────────────────────────</span></span>
+│   │   │   │   ├── <span class="tree-folder">domain/</span>
+│   │   │   │   │   ├── <span class="tree-folder">model/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">Transaction.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">Account.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">Category.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">Loan.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">Budget.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">Goal.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">repository/</span>             <span class="tree-comment"># Interfaces</span>
+│   │   │   │   │   │   ├── <span class="tree-new">TransactionRepository.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AccountRepository.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">LoanRepository.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">BackupRepository.kt</span>
+│   │   │   │   │   └── <span class="tree-folder">usecase/</span>
+│   │   │   │   │       ├── <span class="tree-new">AddTransactionUseCase.kt</span>
+│   │   │   │   │       ├── <span class="tree-new">GetTransactionsUseCase.kt</span>
+│   │   │   │   │       ├── <span class="tree-new">TransferFundsUseCase.kt</span>
+│   │   │   │   │       ├── <span class="tree-new">AddLoanUseCase.kt</span>
+│   │   │   │   │       ├── <span class="tree-new">RecordLoanPaymentUseCase.kt</span>
+│   │   │   │   │       ├── <span class="tree-new">CalculateBudgetStatusUseCase.kt</span>
+│   │   │   │   │       ├── <span class="tree-new">BackupToDriveUseCase.kt</span>
+│   │   │   │   │       └── <span class="tree-new">RestoreFromDriveUseCase.kt</span>
+│   │   │   │<span class="ind1">
+│   │   │   │   <span class="tree-comment">## ── PRESENTATION LAYER ───────────────────────</span></span>
+│   │   │   │   ├── <span class="tree-folder">presentation/</span>
+│   │   │   │   │   ├── <span class="tree-folder">auth/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">LoginScreen.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">AuthViewModel.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">dashboard/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">DashboardScreen.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">DashboardViewModel.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">BalanceCard.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AccountsRow.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">QuickActionsGrid.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">UpdateBanner.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">TransactionList.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">transaction/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AddTransactionSheet.kt</span>   <span class="tree-comment"># Bottom sheet</span>
+│   │   │   │   │   │   ├── <span class="tree-new">TransactionViewModel.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">TransactionDetailScreen.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">ScanReceiptScreen.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">CategoryPickerSheet.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">accounts/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AccountsScreen.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AccountsViewModel.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AddAccountSheet.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">TransferScreen.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">analytics/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AnalyticsScreen.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AnalyticsViewModel.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">SpendingBarChart.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">CategoryDonutChart.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">NetWorthLineChart.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">BudgetProgressCard.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">loans/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">LoansScreen.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">LoansViewModel.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">AddLoanSheet.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">LoanDetailScreen.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">RecordPaymentSheet.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">budget/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">BudgetScreen.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">BudgetViewModel.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">settings/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">SettingsScreen.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">SettingsViewModel.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">ThemeSelector.kt</span>
+│   │   │   │   │   │   ├── <span class="tree-new">NotificationSettings.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">BackupRestoreScreen.kt</span>
+│   │   │   │   │   ├── <span class="tree-folder">notifications/</span>
+│   │   │   │   │   │   ├── <span class="tree-new">NotificationScreen.kt</span>
+│   │   │   │   │   │   └── <span class="tree-new">NotificationViewModel.kt</span>
+│   │   │   │   │   └── <span class="tree-folder">navigation/</span>
+│   │   │   │   │       ├── <span class="tree-new">NavGraph.kt</span>
+│   │   │   │   │       └── <span class="tree-new">BottomNavBar.kt</span>            <span class="tree-comment"># FAB center + 4 tabs</span>
+│   │   │   │<span class="ind1">
+│   │   │   │   <span class="tree-comment">## ── WORKERS / SERVICES ───────────────────────</span></span>
+│   │   │   │   ├── <span class="tree-folder">worker/</span>
+│   │   │   │   │   ├── <span class="tree-new">DriveBackupWorker.kt</span>         <span class="tree-comment"># WorkManager daily backup</span>
+│   │   │   │   │   ├── <span class="tree-new">LoanReminderWorker.kt</span>        <span class="tree-comment"># Due date notifications</span>
+│   │   │   │   │   ├── <span class="tree-new">BudgetCheckWorker.kt</span>         <span class="tree-comment"># Budget alert checks</span>
+│   │   │   │   │   ├── <span class="tree-new">RecurringTxWorker.kt</span>         <span class="tree-comment"># Auto recurring entries</span>
+│   │   │   │   │   └── <span class="tree-new">UpdateCheckWorker.kt</span>         <span class="tree-comment"># In-app update checker</span>
+│   │   │   │   │<span class="ind1">
+│   │   │   │   <span class="tree-comment">## ── DI / UTILS ───────────────────────────────</span></span>
+│   │   │   │   ├── <span class="tree-folder">di/</span>
+│   │   │   │   │   ├── <span class="tree-new">AppModule.kt</span>
+│   │   │   │   │   ├── <span class="tree-new">DatabaseModule.kt</span>
+│   │   │   │   │   ├── <span class="tree-new">NetworkModule.kt</span>
+│   │   │   │   │   └── <span class="tree-new">RepositoryModule.kt</span>
+│   │   │   │   ├── <span class="tree-folder">util/</span>
+│   │   │   │   │   ├── <span class="tree-new">CurrencyFormatter.kt</span>
+│   │   │   │   │   ├── <span class="tree-new">DateFormatter.kt</span>
+│   │   │   │   │   ├── <span class="tree-new">ExportHelper.kt</span>             <span class="tree-comment"># CSV/PDF/Excel</span>
+│   │   │   │   │   ├── <span class="tree-new">SoundPlayer.kt</span>              <span class="tree-comment"># Transaction sounds</span>
+│   │   │   │   │   ├── <span class="tree-new">BiometricHelper.kt</span>
+│   │   │   │   │   └── <span class="tree-new">NotificationHelper.kt</span>
+│   │   │   │   └── <span class="tree-new">PocketLedgerApp.kt</span>           <span class="tree-comment"># Application class + Hilt</span>
+│   │   │   │
+│   │   │   └── <span class="tree-folder">res/</span>
+│   │   │       ├── <span class="tree-folder">drawable/</span>                      <span class="tree-comment"># Icons, vectors, logo</span>
+│   │   │       ├── <span class="tree-folder">raw/</span>                           <span class="tree-comment"># Sound files (cash.mp3, etc)</span>
+│   │   │       ├── <span class="tree-folder">values/</span>
+│   │   │       │   ├── <span class="tree-file">strings.xml</span>
+│   │   │       │   ├── <span class="tree-file">themes.xml</span>
+│   │   │       │   └── <span class="tree-file">colors.xml</span>
+│   │   │       ├── <span class="tree-folder">values-night/</span>
+│   │   │       │   └── <span class="tree-file">themes.xml</span>                <span class="tree-comment"># Dark theme</span>
+│   │   │       ├── <span class="tree-folder">mipmap-xxxhdpi/</span>
+│   │   │       │   ├── <span class="tree-new">ic_launcher.png</span>            <span class="tree-comment"># 192x192 app icon</span>
+│   │   │       │   └── <span class="tree-new">ic_launcher_foreground.png</span>
+│   │   │       └── <span class="tree-folder">xml/</span>
+│   │   │           ├── <span class="tree-file">backup_rules.xml</span>
+│   │   │           ├── <span class="tree-file">notification_channels.xml</span>
+│   │   │           └── <span class="tree-file">file_provider_paths.xml</span>
+│   │   └── <span class="tree-folder">test/ &amp; androidTest/</span>             <span class="tree-comment"># Unit + UI tests</span>
+├── <span class="tree-folder">gradle/</span>
+│   └── <span class="tree-file">libs.versions.toml</span>                <span class="tree-comment"># Version catalog</span>
+├── <span class="tree-file">build.gradle.kts</span>                       <span class="tree-comment"># Root build file</span>
+├── <span class="tree-file">settings.gradle.kts</span>
+├── <span class="tree-file">keystore.jks</span>                          <span class="tree-comment"># Release signing (gitignored)</span>
+└── <span class="tree-file">README.md</span>
+  </div>
+</div>
+
+<!-- ======================== GITHUB ACTIONS ======================== -->
+<div class="section">
+  <div class="sec-title"><i class="ti ti-brand-github"></i> GitHub Actions — build-release.yml</div>
+  <div class="code-block">
+    <div class="code-header">
+      <span>.github/workflows/build-release.yml</span>
+      <span class="lang">YAML</span>
+    </div>
+    <div class="code-body"><span class="c-key">name</span>: <span class="c-str">PocketLedger CI/CD — Build & Release</span>
+
+<span class="c-key">on</span>:
+  <span class="c-key">push</span>:
+    <span class="c-key">branches</span>: [<span class="c-str">main</span>, <span class="c-str">develop</span>]
+    <span class="c-key">tags</span>: [<span class="c-str">'v*.*.*'</span>]
+  <span class="c-key">pull_request</span>:
+    <span class="c-key">branches</span>: [<span class="c-str">main</span>]
+  <span class="c-key">workflow_dispatch</span>:
+    <span class="c-key">inputs</span>:
+      <span class="c-key">release_type</span>:
+        <span class="c-key">description</span>: <span class="c-str">'Release type (alpha/beta/production)'</span>
+        <span class="c-key">default</span>: <span class="c-str">'alpha'</span>
+        <span class="c-key">required</span>: <span class="c-num">true</span>
+
+<span class="c-key">env</span>:
+  <span class="c-key">JAVA_VERSION</span>: <span class="c-str">'17'</span>
+  <span class="c-key">ANDROID_API_LEVEL</span>: <span class="c-str">'34'</span>
+  <span class="c-key">GRADLE_OPTS</span>: <span class="c-str">'-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true'</span>
+
+<span class="c-key">jobs</span>:
+
+  <span class="c-com"># ── Job 1: Code Quality Checks ──────────────────────────</span>
+  <span class="c-key">lint_and_test</span>:
+    <span class="c-key">name</span>: <span class="c-str">Lint + Unit Tests</span>
+    <span class="c-key">runs-on</span>: <span class="c-str">ubuntu-latest</span>
+    <span class="c-key">steps</span>:
+      - <span class="c-key">uses</span>: <span class="c-str">actions/checkout@v4</span>
+
+      - <span class="c-key">name</span>: <span class="c-str">Set up JDK 17</span>
+        <span class="c-key">uses</span>: <span class="c-str">actions/setup-java@v4</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">java-version</span>: <span class="c-str">'17'</span>
+          <span class="c-key">distribution</span>: <span class="c-str">'temurin'</span>
+          <span class="c-key">cache</span>: <span class="c-str">gradle</span>
+
+      - <span class="c-key">name</span>: <span class="c-str">Decode google-services.json</span>
+        <span class="c-key">run</span>: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
+
+      - <span class="c-key">name</span>: <span class="c-str">Decode keystore</span>
+        <span class="c-key">run</span>: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+
+      - <span class="c-key">name</span>: <span class="c-str">Run Android Lint</span>
+        <span class="c-key">run</span>: ./gradlew lintDebug
+
+      - <span class="c-key">name</span>: <span class="c-str">Run Unit Tests</span>
+        <span class="c-key">run</span>: ./gradlew testDebugUnitTest
+
+      - <span class="c-key">name</span>: <span class="c-str">Upload Test Results</span>
+        <span class="c-key">if</span>: always()
+        <span class="c-key">uses</span>: <span class="c-str">actions/upload-artifact@v4</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">name</span>: <span class="c-str">test-results</span>
+          <span class="c-key">path</span>: <span class="c-str">app/build/reports/tests/</span>
+
+  <span class="c-com"># ── Job 2: Build Debug APK ───────────────────────────────</span>
+  <span class="c-key">build_debug</span>:
+    <span class="c-key">name</span>: <span class="c-str">Build Debug APK</span>
+    <span class="c-key">runs-on</span>: <span class="c-str">ubuntu-latest</span>
+    <span class="c-key">needs</span>: <span class="c-str">lint_and_test</span>
+    <span class="c-key">steps</span>:
+      - <span class="c-key">uses</span>: <span class="c-str">actions/checkout@v4</span>
+      - <span class="c-key">uses</span>: <span class="c-str">actions/setup-java@v4</span>
+        <span class="c-key">with</span>: { <span class="c-key">java-version</span>: <span class="c-str">'17'</span>, <span class="c-key">distribution</span>: <span class="c-str">'temurin'</span>, <span class="c-key">cache</span>: <span class="c-str">gradle</span> }
+
+      - <span class="c-key">name</span>: <span class="c-str">Decode google-services.json</span>
+        <span class="c-key">run</span>: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
+
+      - <span class="c-key">name</span>: <span class="c-str">Build Debug APK</span>
+        <span class="c-key">run</span>: ./gradlew assembleDebug
+
+      - <span class="c-key">name</span>: <span class="c-str">Upload Debug APK</span>
+        <span class="c-key">uses</span>: <span class="c-str">actions/upload-artifact@v4</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">name</span>: <span class="c-str">pocketledger-debug-${{ github.sha }}</span>
+          <span class="c-key">path</span>: <span class="c-str">app/build/outputs/apk/debug/*.apk</span>
+          <span class="c-key">retention-days</span>: <span class="c-num">14</span>
+
+  <span class="c-com"># ── Job 3: Build & Sign Release APK/AAB ─────────────────</span>
+  <span class="c-key">build_release</span>:
+    <span class="c-key">name</span>: <span class="c-str">Build & Sign Release</span>
+    <span class="c-key">runs-on</span>: <span class="c-str">ubuntu-latest</span>
+    <span class="c-key">needs</span>: <span class="c-str">lint_and_test</span>
+    <span class="c-key">if</span>: <span class="c-str">startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'</span>
+    <span class="c-key">steps</span>:
+      - <span class="c-key">uses</span>: <span class="c-str">actions/checkout@v4</span>
+      - <span class="c-key">uses</span>: <span class="c-str">actions/setup-java@v4</span>
+        <span class="c-key">with</span>: { <span class="c-key">java-version</span>: <span class="c-str">'17'</span>, <span class="c-key">distribution</span>: <span class="c-str">'temurin'</span>, <span class="c-key">cache</span>: <span class="c-str">gradle</span> }
+
+      - <span class="c-key">name</span>: <span class="c-str">Decode secrets</span>
+        <span class="c-key">run</span>: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+
+      - <span class="c-key">name</span>: <span class="c-str">Build Release AAB (Play Store)</span>
+        <span class="c-key">run</span>: |
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+
+      - <span class="c-key">name</span>: <span class="c-str">Build Release APK (Direct Install)</span>
+        <span class="c-key">run</span>: |
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+
+      - <span class="c-key">name</span>: <span class="c-str">Upload AAB + APK</span>
+        <span class="c-key">uses</span>: <span class="c-str">actions/upload-artifact@v4</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">name</span>: <span class="c-str">pocketledger-release-${{ github.ref_name }}</span>
+          <span class="c-key">path</span>: |
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/release/*.apk
+
+  <span class="c-com"># ── Job 4: Deploy to Play Store ──────────────────────────</span>
+  <span class="c-key">deploy_play_store</span>:
+    <span class="c-key">name</span>: <span class="c-str">Deploy to Play Store</span>
+    <span class="c-key">runs-on</span>: <span class="c-str">ubuntu-latest</span>
+    <span class="c-key">needs</span>: <span class="c-str">build_release</span>
+    <span class="c-key">if</span>: <span class="c-str">startsWith(github.ref, 'refs/tags/v')</span>
+    <span class="c-key">steps</span>:
+      - <span class="c-key">uses</span>: <span class="c-str">actions/checkout@v4</span>
+      - <span class="c-key">name</span>: <span class="c-str">Download AAB</span>
+        <span class="c-key">uses</span>: <span class="c-str">actions/download-artifact@v4</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">name</span>: <span class="c-str">pocketledger-release-${{ github.ref_name }}</span>
+
+      - <span class="c-key">name</span>: <span class="c-str">Upload to Play Store (Internal → Alpha → Beta → Production)</span>
+        <span class="c-key">uses</span>: <span class="c-str">r0adkll/upload-google-play@v1</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">serviceAccountJsonPlainText</span>: <span class="c-str">${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}</span>
+          <span class="c-key">packageName</span>: <span class="c-str">com.pocketledger.app</span>
+          <span class="c-key">releaseFiles</span>: <span class="c-str">*.aab</span>
+          <span class="c-key">track</span>: <span class="c-str">${{ github.event.inputs.release_type || 'internal' }}</span>
+          <span class="c-key">status</span>: <span class="c-str">completed</span>
+          <span class="c-key">whatsNewDirectory</span>: <span class="c-str">distribution/whatsnew/</span>
+
+  <span class="c-com"># ── Job 5: Create GitHub Release ─────────────────────────</span>
+  <span class="c-key">github_release</span>:
+    <span class="c-key">name</span>: <span class="c-str">Create GitHub Release</span>
+    <span class="c-key">runs-on</span>: <span class="c-str">ubuntu-latest</span>
+    <span class="c-key">needs</span>: <span class="c-str">build_release</span>
+    <span class="c-key">if</span>: <span class="c-str">startsWith(github.ref, 'refs/tags/v')</span>
+    <span class="c-key">steps</span>:
+      - <span class="c-key">uses</span>: <span class="c-str">actions/checkout@v4</span>
+      - <span class="c-key">name</span>: <span class="c-str">Download artifacts</span>
+        <span class="c-key">uses</span>: <span class="c-str">actions/download-artifact@v4</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">name</span>: <span class="c-str">pocketledger-release-${{ github.ref_name }}</span>
+          <span class="c-key">path</span>: <span class="c-str">release/</span>
+
+      - <span class="c-key">name</span>: <span class="c-str">Create GitHub Release</span>
+        <span class="c-key">uses</span>: <span class="c-str">softprops/action-gh-release@v2</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">files</span>: <span class="c-str">release/**/*</span>
+          <span class="c-key">generate_release_notes</span>: <span class="c-num">true</span>
+          <span class="c-key">draft</span>: <span class="c-num">false</span>
+          <span class="c-key">prerelease</span>: <span class="c-str">${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}</span>
+        <span class="c-key">env</span>:
+          <span class="c-key">GITHUB_TOKEN</span>: <span class="c-str">${{ secrets.GITHUB_TOKEN }}</span>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top:16px;">
+    <div class="code-header">
+      <span>.github/workflows/pr-check.yml</span>
+      <span class="lang">YAML</span>
+    </div>
+    <div class="code-body"><span class="c-key">name</span>: <span class="c-str">PR Check</span>
+<span class="c-key">on</span>:
+  <span class="c-key">pull_request</span>:
+    <span class="c-key">branches</span>: [<span class="c-str">main</span>, <span class="c-str">develop</span>]
+<span class="c-key">jobs</span>:
+  <span class="c-key">check</span>:
+    <span class="c-key">runs-on</span>: <span class="c-str">ubuntu-latest</span>
+    <span class="c-key">steps</span>:
+      - <span class="c-key">uses</span>: <span class="c-str">actions/checkout@v4</span>
+      - <span class="c-key">uses</span>: <span class="c-str">actions/setup-java@v4</span>
+        <span class="c-key">with</span>: { <span class="c-key">java-version</span>: <span class="c-str">'17'</span>, <span class="c-key">distribution</span>: <span class="c-str">'temurin'</span>, <span class="c-key">cache</span>: <span class="c-str">gradle</span> }
+      - <span class="c-key">run</span>: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
+      - <span class="c-key">run</span>: ./gradlew ktlintCheck detekt lintDebug testDebugUnitTest
+      - <span class="c-key">name</span>: <span class="c-str">Comment test coverage on PR</span>
+        <span class="c-key">uses</span>: <span class="c-str">madrapps/jacoco-report@v1.6.1</span>
+        <span class="c-key">with</span>:
+          <span class="c-key">paths</span>: <span class="c-str">app/build/reports/jacoco/**/*.xml</span>
+          <span class="c-key">token</span>: <span class="c-str">${{ secrets.GITHUB_TOKEN }}</span>
+          <span class="c-key">min-coverage-overall</span>: <span class="c-num">70</span>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== GITHUB SECRETS ======================== -->
+<div class="section">
+  <div class="sec-title"><i class="ti ti-lock"></i> Required GitHub Secrets</div>
+  <div class="feat-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(240,92,110,0.12);color:#f05c6e;"><i class="ti ti-key"></i></div>
+      <div class="feat-name">KEYSTORE_BASE64</div>
+      <div class="feat-desc">Base64-encoded release keystore .jks file. Run: base64 keystore.jks | pbcopy</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(245,166,35,0.12);color:#f5a623;"><i class="ti ti-lock-password"></i></div>
+      <div class="feat-name">KEYSTORE_PASSWORD</div>
+      <div class="feat-desc">Password used when creating the keystore file with keytool.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(167,139,250,0.12);color:#a78bfa;"><i class="ti ti-id-badge"></i></div>
+      <div class="feat-name">KEY_ALIAS + KEY_PASSWORD</div>
+      <div class="feat-desc">The alias name and its password used in your keystore.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(79,142,247,0.12);color:#4f8ef7;"><i class="ti ti-brand-firebase"></i></div>
+      <div class="feat-name">GOOGLE_SERVICES_JSON</div>
+      <div class="feat-desc">Base64-encoded google-services.json from Firebase Console.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:rgba(48,212,138,0.12);color:#30d48a;"><i class="ti ti-brand-google-play"></i></div>
+      <div class="feat-name">PLAY_SERVICE_ACCOUNT_JSON</div>
+      <div class="feat-desc">Google Play API service account JSON for automated store uploads.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SETUP STEPS ======================== -->
+<div class="section">
+  <div class="sec-title"><i class="ti ti-list-check"></i> Setup Steps</div>
+  <ul class="step-list">
+    <li><div class="step-num">1</div><div><b>Firebase Project</b> — Create project at console.firebase.google.com. Enable Google Sign-In under Authentication. Download google-services.json into /app/.</div></li>
+    <li><div class="step-num">2</div><div><b>Google Drive API</b> — In Firebase project, enable Drive API in Google Cloud Console. Add OAuth scope drive.appdata for per-user backup storage.</div></li>
+    <li><div class="step-num">3</div><div><b>Generate Keystore</b> — Run: keytool -genkey -v -keystore keystore.jks -alias pocketledger -keyalg RSA -keysize 2048 -validity 10000. Keep it safe — you cannot change it after publishing.</div></li>
+    <li><div class="step-num">4</div><div><b>Add GitHub Secrets</b> — Go to Repo → Settings → Secrets. Add all 6 secrets listed above. Never commit these files to the repo.</div></li>
+    <li><div class="step-num">5</div><div><b>Play Store Setup</b> — Create app in Google Play Console. Create a Service Account with Release Manager permissions. Download JSON key. Add as PLAY_SERVICE_ACCOUNT_JSON secret.</div></li>
+    <li><div class="step-num">6</div><div><b>First Release</b> — Push tag: git tag v1.0.0 && git push origin v1.0.0. GitHub Actions will build, sign, and upload to Play Store internal track automatically.</div></li>
+    <li><div class="step-num">7</div><div><b>In-App Updates</b> — Integrate play-core library in build.gradle. Use AppUpdateManager to check for updates on app launch. Show flexible update flow (downloads in background).</div></li>
+    <li><div class="step-num">8</div><div><b>App Icon</b> — Use Android Studio's Image Asset Studio. Design a coin/wallet icon. Export all mipmap densities (mdpi to xxxhdpi) including adaptive icon layers for Android 8+.</div></li>
+  </ul>
+</div>
+
+<!-- ======================== CATEGORIES ======================== -->
+<div class="section">
+  <div class="sec-title"><i class="ti ti-grid-4x4"></i> Built-in Categories</div>
+  <div class="feat-grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#f05c6e;"><i class="ti ti-tools-kitchen-2"></i></div>
+      <div class="feat-name" style="font-size:12px;">Food &amp; Dining</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#4f8ef7;"><i class="ti ti-car"></i></div>
+      <div class="feat-name" style="font-size:12px;">Transport</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#f5a623;"><i class="ti ti-shopping-bag"></i></div>
+      <div class="feat-name" style="font-size:12px;">Shopping</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#30d48a;"><i class="ti ti-heartbeat"></i></div>
+      <div class="feat-name" style="font-size:12px;">Health</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#a78bfa;"><i class="ti ti-bolt"></i></div>
+      <div class="feat-name" style="font-size:12px;">Utilities</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#f472b6;"><i class="ti ti-device-tv"></i></div>
+      <div class="feat-name" style="font-size:12px;">Entertainment</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#2dd4bf;"><i class="ti ti-school"></i></div>
+      <div class="feat-name" style="font-size:12px;">Education</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#4f8ef7;"><i class="ti ti-plane"></i></div>
+      <div class="feat-name" style="font-size:12px;">Travel</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#30d48a;"><i class="ti ti-briefcase"></i></div>
+      <div class="feat-name" style="font-size:12px;">Salary</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#f5a623;"><i class="ti ti-home"></i></div>
+      <div class="feat-name" style="font-size:12px;">Rent / Housing</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#f05c6e;"><i class="ti ti-clock-dollar"></i></div>
+      <div class="feat-name" style="font-size:12px;">Loan EMI</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#a78bfa;"><i class="ti ti-chart-line"></i></div>
+      <div class="feat-name" style="font-size:12px;">Investment</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#2dd4bf;"><i class="ti ti-shield"></i></div>
+      <div class="feat-name" style="font-size:12px;">Insurance</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#f472b6;"><i class="ti ti-gift"></i></div>
+      <div class="feat-name" style="font-size:12px;">Gifts</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#4f8ef7;"><i class="ti ti-refresh-dot"></i></div>
+      <div class="feat-name" style="font-size:12px;">Subscriptions</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#f5a623;"><i class="ti ti-user"></i></div>
+      <div class="feat-name" style="font-size:12px;">Personal Care</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#30d48a;"><i class="ti ti-pig-money"></i></div>
+      <div class="feat-name" style="font-size:12px;">Freelance</div>
+    </div>
+    <div class="feat-card" style="padding:12px;text-align:center;">
+      <div style="font-size:22px;margin-bottom:6px;color:#8a90a8;"><i class="ti ti-dots"></i></div>
+      <div class="feat-name" style="font-size:12px;">Other</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+<div style="text-align:center;padding:20px 0 10px;color:var(--t3);font-size:12px;">
+  PocketLedger — Money Manager Build Guide · Generated by Claude
+</div>
+</div>
+</body>
+</html>

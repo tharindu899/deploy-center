@@ -1,15 +1,14 @@
 {
   "apps": [
     {
-      "slug":        "budget-manager",
-      "name":        "Budget Manager",
-      "description": "Track your monthly expenses, set budgets, and visualize spending habits with beautiful charts.",
+      "slug":        "pocket-ledger",
+      "name":        "PocketLedger",
+      "description": "Personal money manager — track income, expenses and loans.",
       "category":    "Finance",
-      "version":     "1.2.0",
-      "rating":      4.6,
-      "path":        "apps/budget-manager/index.html",
-      "thumbnail":   "assets/thumbnails/budget-manager.svg",
-      "tags":        ["money", "tracker", "finance", "budget", "expenses"]
+      "version":     "1.0.0",
+      "rating":      4.7,
+      "path":        "apps/pocket-ledger/index.html",
+      "tags":        ["money", "finance", "budget", "tracker"]
     },
     {
       "slug":        "movie-ui",
