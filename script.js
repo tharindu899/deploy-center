@@ -1,5 +1,5 @@
 /* ============================================================
-   DEPLOY CENTER — script.js
+   DEPLOY CENTER — script.js  (fixed)
    ============================================================ */
 
 'use strict';
@@ -24,16 +24,16 @@ const LS = {
 
 /* ── State ── */
 const state = {
-  apps:          [],
-  filtered:      [],
+  apps:           [],
+  filtered:       [],
   deferredPrompt: null,
-  favOnly:       false,
-  loadingStages: ['Contacting GitHub API…', 'Scanning app folders…', 'Parsing metadata…', 'Generating thumbnails…', 'Ready!'],
+  favOnly:        false,
+  loadingStages:  ['Contacting GitHub API…', 'Scanning app folders…', 'Parsing metadata…', 'Generating thumbnails…', 'Ready!'],
 };
 
 /* ── DOM Helpers ── */
-const q  = (s, root = document)  => root.querySelector(s);
-const qa = (s, root = document)  => [...root.querySelectorAll(s)];
+const q    = (s, root = document) => root.querySelector(s);
+const qa   = (s, root = document) => [...root.querySelectorAll(s)];
 const qAny = (...sels) => sels.map(sel => q(sel)).find(Boolean) || null;
 
 /* ============================================================
@@ -44,17 +44,20 @@ function loadTheme() {
   document.documentElement.classList.toggle('light', t === 'light');
   updateThemeIcon(t === 'light');
 }
+
 function toggleTheme() {
   const light = document.documentElement.classList.toggle('light');
   localStorage.setItem(LS.theme, light ? 'light' : 'dark');
   updateThemeIcon(light);
 }
+
+/* FIX #1 — HTML uses #iconMoon / #iconSun with .hidden toggle, not a single #themeIcon */
 function updateThemeIcon(isLight) {
-  const icon = q('#themeIcon');
-  if (!icon) return;
-  icon.innerHTML = isLight
-    ? '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
-    : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  const moon = q('#iconMoon');
+  const sun  = q('#iconSun');
+  if (!moon || !sun) return;
+  moon.classList.toggle('hidden', isLight);
+  sun.classList.toggle('hidden', !isLight);
 }
 
 /* ============================================================
@@ -141,26 +144,28 @@ function isFavorite(slug) {
 
 /* ============================================================
    STATS RENDERING
+   FIX #3 — use .bento-cell/.bento-icon/.bento-val/.bento-label
+            to match existing CSS (was .stat-card/.stat-icon/…)
    ============================================================ */
 function renderStats() {
   const totalVisits = Number(localStorage.getItem(LS.visits) || 0);
   const favCount    = getJSON(LS.fav, []).length;
   const catCount    = getUniqueCategories(state.apps).length;
-  const updated     = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short' });
+  const updated     = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 
   const items = [
-    { icon: '⬡', label: 'Total Apps',  value: state.apps.length },
-    { icon: '◈', label: 'Categories',  value: catCount },
+    { icon: '⬡', label: 'Total Apps',   value: state.apps.length },
+    { icon: '◈', label: 'Categories',   value: catCount },
     { icon: '◉', label: 'Total Visits', value: totalVisits },
-    { icon: '★', label: 'Favorites',   value: favCount },
-    { icon: '↻', label: 'Updated',     value: updated },
+    { icon: '★', label: 'Favorites',    value: favCount },
+    { icon: '↻', label: 'Updated',      value: updated },
   ];
 
   q('#stats').innerHTML = items.map(s => `
-    <div class="stat-card">
-      <span class="stat-icon">${s.icon}</span>
-      <div class="stat-value">${s.value}</div>
-      <div class="stat-label">${s.label}</div>
+    <div class="bento-cell">
+      <div class="bento-icon">${s.icon}</div>
+      <div class="bento-val">${s.value}</div>
+      <div class="bento-label">${s.label}</div>
     </div>
   `).join('');
 }
@@ -171,8 +176,9 @@ function renderStats() {
 function getUniqueCategories(apps) {
   return [...new Set(apps.map(a => a.category).filter(Boolean))].sort();
 }
+
 function fillCategories() {
-  const select = q('#categoryFilter');
+  const select  = q('#categoryFilter');
   const current = select.value;
   select.innerHTML = '<option value="all">⬡ All Categories</option>' +
     getUniqueCategories(state.apps)
@@ -181,16 +187,16 @@ function fillCategories() {
   if (current && current !== 'all') select.value = current;
 }
 
-/* ── Category CSS class helper ── */
+/* FIX #2 — CSS defines .c-finance/.c-entertainment/… not .cat-finance/… */
 function catClass(category) {
   const map = {
-    Finance:       'cat-finance',
-    Entertainment: 'cat-entertainment',
-    Tools:         'cat-tools',
-    Utilities:     'cat-utilities',
-    Productivity:  'cat-productivity',
+    Finance:       'c-finance',
+    Entertainment: 'c-entertainment',
+    Tools:         'c-tools',
+    Utilities:     'c-utilities',
+    Productivity:  'c-productivity',
   };
-  return map[category] || 'cat-default';
+  return map[category] || 'c-default';
 }
 
 /* ============================================================
@@ -221,55 +227,74 @@ function thumbFor(app) {
 function buildCard(app, small = false) {
   const cardTemplate = qAny('#cardTpl', '#cardTemplate');
   if (!cardTemplate) throw new Error('Card template not found');
-  const tmpl  = cardTemplate.content.cloneNode(true);
-  const card  = tmpl.querySelector('.app-card');
+  const tmpl   = cardTemplate.content.cloneNode(true);
+  const card   = tmpl.querySelector('.app-card');
   const visits = (getJSON(LS.appVisits, {})[app.slug] || 0);
-  const fav   = isFavorite(app.slug);
+  const fav    = isFavorite(app.slug);
 
-  /* Thumbnail */
+  /* ── Thumbnail ── */
   const img = tmpl.querySelector('.thumb-img, .thumb');
-  img.src = thumbFor(app);
-  img.alt = `${app.name} thumbnail`;
+  img.src   = thumbFor(app);
+  img.alt   = `${app.name} thumbnail`;
   img.onerror = () => { img.src = generateThumb(app); };
 
-  /* Category chip */
+  /* ── Category chip — FIX #2 applied ── */
   const chip = tmpl.querySelector('.cat-pill, .card-category-chip');
   chip.textContent = app.category || 'App';
   chip.classList.add(catClass(app.category));
 
-  /* Text */
+  /* ── Text ── */
+  tmpl.querySelector('.card-name').textContent = app.description || 'No description.';
+
+  /* FIX #4 — .rating-val is the rating span; version goes into .card-ver only */
   tmpl.querySelector('.card-name').textContent = app.name;
   tmpl.querySelector('.card-desc').textContent = app.description || 'No description.';
-  const versionNode = tmpl.querySelector('.version-badge, .rating-val');
-  if (versionNode) versionNode.textContent = `v${app.version || '1.0.0'}`;
+
+  const verNode = tmpl.querySelector('.card-ver');
+  if (verNode) verNode.textContent = `v${app.version || '1.0.0'}`;
+
+  const ratingValNode = tmpl.querySelector('.rating-val');
+  if (ratingValNode) ratingValNode.textContent = (app.rating || 4).toFixed(1);
+
   tmpl.querySelector('.stars').innerHTML = starRating(app.rating || 4);
+
   const visitsNode = tmpl.querySelector('.visits, .visits-label');
   if (visitsNode) visitsNode.textContent = `${visits} visit${visits !== 1 ? 's' : ''}`;
 
-  /* Favorite */
+  /* ── Favorite — FIX #5 use .saved (matches CSS), FIX #6 use --gold-light ── */
   const favBtn = tmpl.querySelector('.save-btn, .fav-btn');
-  if (favBtn && fav) favBtn.classList.add('is-fav');
-  favBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleFavorite(app.slug);
-    favBtn.classList.toggle('is-fav');
-    const svg = favBtn.querySelector('polygon, svg polygon');
-    if (svg) svg.style.fill = isFavorite(app.slug) ? 'var(--amber)' : 'none';
-    renderStats();
-    renderFavSection();
-  });
+  if (favBtn) {
+    if (fav) {
+      favBtn.classList.add('saved');
+      const poly = favBtn.querySelector('polygon');
+      if (poly) poly.style.fill = 'var(--gold-light)';
+    }
+    favBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavorite(app.slug);
+      const nowFav = isFavorite(app.slug);
+      favBtn.classList.toggle('saved', nowFav);
+      const poly = favBtn.querySelector('polygon');
+      if (poly) poly.style.fill = nowFav ? 'var(--gold-light)' : 'none';
+      renderStats();
+      renderFavSection();
+    });
+  }
 
-  /* Open button */
+  /* ── Launch button ── */
   const openBtn = tmpl.querySelector('.btn-launch, .btn-open');
   if (openBtn) openBtn.href = app.path;
   openBtn?.addEventListener('click', () => {
     recordVisit(app.slug);
     renderStats();
     renderRecentSection();
-    if (visitsNode) visitsNode.textContent = `${visits + 1} visit${visits + 1 !== 1 ? 's' : ''}`;
+    if (visitsNode) {
+      const newCount = visits + 1;
+      visitsNode.textContent = `${newCount} visit${newCount !== 1 ? 's' : ''}`;
+    }
   });
 
-  /* Preview buttons */
+  /* ── Preview buttons ── */
   const previewBtns = tmpl.querySelectorAll('.btn-prev, .preview-btn-hover, .btn-preview, .btn-preview-hover');
   previewBtns.forEach(btn => btn.addEventListener('click', () => openPreview(app)));
 
@@ -287,14 +312,14 @@ function generateThumb(app) {
     Utilities:     '#160a2a,#bf5af2',
     Productivity:  '#1a140a,#ffb830',
   };
-  const [bg, accent] = (colors[app.category] || '#0a1428,#00f5ff').split(',');
+  const [bg, accent] = (colors[app.category] || '#0a1428,#c9922a').split(',');
   const initial = (app.name || 'A')[0].toUpperCase();
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 340'>
     <rect width='600' height='340' fill='${bg}'/>
-    <circle cx='300' cy='120' r='60' fill='${accent}22' stroke='${accent}44' stroke-width='1'/>
-    <text x='300' y='136' text-anchor='middle' fill='${accent}' font-size='60' font-family='monospace' font-weight='700'>${initial}</text>
-    <text x='300' y='210' text-anchor='middle' fill='#e8f4ff' font-size='22' font-family='monospace'>${app.name}</text>
-    <text x='300' y='238' text-anchor='middle' fill='${accent}99' font-size='12' font-family='monospace'>${app.category || 'APP'}</text>
+    <circle cx='300' cy='130' r='64' fill='${accent}22' stroke='${accent}44' stroke-width='1'/>
+    <text x='300' y='148' text-anchor='middle' fill='${accent}' font-size='62' font-family='Georgia,serif' font-weight='700'>${initial}</text>
+    <text x='300' y='218' text-anchor='middle' fill='#e8f4ff' font-size='20' font-family='monospace'>${app.name}</text>
+    <text x='300' y='244' text-anchor='middle' fill='${accent}99' font-size='11' font-family='monospace' letter-spacing='2'>${(app.category || 'APP').toUpperCase()}</text>
   </svg>`;
   return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
 }
@@ -302,15 +327,10 @@ function generateThumb(app) {
 /* ============================================================
    RENDER SECTIONS
    ============================================================ */
-function renderGrid(container, apps, small = false) {
-  container.innerHTML = '';
-  apps.forEach(a => container.appendChild(buildCard(a, small)));
-}
-
 function renderMainApps(apps) {
-  const grid   = q('#appsGrid');
-  const empty  = q('#emptyState');
-  const count  = qAny('#allCount', '#appsCount');
+  const grid  = q('#appsGrid');
+  const empty = q('#emptyState');
+  const count = qAny('#allCount', '#appsCount');
   grid.innerHTML = '';
   if (apps.length === 0) {
     empty.classList.remove('hidden');
@@ -318,7 +338,7 @@ function renderMainApps(apps) {
     empty.classList.add('hidden');
     apps.forEach(a => grid.appendChild(buildCard(a)));
   }
-  count.textContent = `${apps.length} app${apps.length !== 1 ? 's' : ''}`;
+  if (count) count.textContent = `${apps.length} app${apps.length !== 1 ? 's' : ''}`;
 }
 
 function renderRecentSection() {
@@ -327,47 +347,49 @@ function renderRecentSection() {
   const sec    = qAny('#recentSec', '#recentSection');
   const grid   = qAny('#recentRow', '#recentGrid');
   const count  = q('#recentCount');
+  if (!sec) return;
   if (recent.length === 0) { sec.classList.add('hidden'); return; }
   sec.classList.remove('hidden');
-  grid.innerHTML = '';
-  recent.forEach(a => grid.appendChild(buildCard(a, true)));
-  count.textContent = `${recent.length}`;
+  if (grid) { grid.innerHTML = ''; recent.forEach(a => grid.appendChild(buildCard(a, true))); }
+  if (count) count.textContent = `${recent.length}`;
 }
 
 function renderFavSection() {
-  const favs   = getJSON(LS.fav, []);
-  const apps   = state.apps.filter(a => favs.includes(a.slug));
-  const sec    = qAny('#savedSec', '#favSection');
-  const grid   = qAny('#savedRow', '#favGrid');
-  const count  = qAny('#savedCount', '#favCount');
+  const favs  = getJSON(LS.fav, []);
+  const apps  = state.apps.filter(a => favs.includes(a.slug));
+  const sec   = qAny('#savedSec', '#favSection');
+  const grid  = qAny('#savedRow', '#favGrid');
+  const count = qAny('#savedCount', '#favCount');
+  if (!sec) return;
   if (apps.length === 0) { sec.classList.add('hidden'); return; }
   sec.classList.remove('hidden');
-  grid.innerHTML = '';
-  apps.forEach(a => grid.appendChild(buildCard(a, true)));
-  count.textContent = `${apps.length}`;
+  if (grid) { grid.innerHTML = ''; apps.forEach(a => grid.appendChild(buildCard(a, true))); }
+  if (count) count.textContent = `${apps.length}`;
 }
 
 /* ============================================================
    SEARCH & FILTER
    ============================================================ */
 function applyFilters() {
-  const term   = q('#searchInput').value.toLowerCase().trim();
-  const cat    = q('#categoryFilter').value;
-  const favs   = getJSON(LS.fav, []);
+  const term = q('#searchInput').value.toLowerCase().trim();
+  const cat  = q('#categoryFilter').value;
+  const favs = getJSON(LS.fav, []);
 
   state.filtered = state.apps.filter(a => {
-    const haystack = [a.name, a.description, a.category, ...(a.tags || [])].join(' ').toLowerCase();
-    const matchSearch   = !term || haystack.includes(term);
-    const matchCategory = cat === 'all' || a.category === cat;
-    const matchFav      = !state.favOnly || favs.includes(a.slug);
-    return matchSearch && matchCategory && matchFav;
+    const haystack    = [a.name, a.description, a.category, ...(a.tags || [])].join(' ').toLowerCase();
+    const matchSearch = !term || haystack.includes(term);
+    const matchCat    = cat === 'all' || a.category === cat;
+    const matchFav    = !state.favOnly || favs.includes(a.slug);
+    return matchSearch && matchCat && matchFav;
   });
 
   renderMainApps(state.filtered);
   renderSuggestions(term);
 }
-/* Expose globally for inline onclick in empty state button */
+
+/* FIX #7 — expose both names; HTML inline onclick uses window._filter() */
 window.applyFilters = applyFilters;
+window._filter      = applyFilters;
 
 function renderSuggestions(term) {
   const list = q('#suggestions');
@@ -392,10 +414,13 @@ function renderSuggestions(term) {
 function openPreview(app) {
   const modal = q('#previewModal');
   q('#previewTitle').textContent = app.name;
+
   const badge = qAny('#modalBadge', '#previewCategory');
   if (badge) badge.textContent = app.category || 'App';
+
   const openLink = qAny('#modalLink', '#previewOpenLink');
   if (openLink) openLink.href = app.path;
+
   const frameLoading = qAny('#frameLoader', '#frameLoading');
   if (frameLoading) frameLoading.style.display = 'flex';
 
@@ -407,6 +432,7 @@ function openPreview(app) {
   modal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
+
 function closePreview() {
   q('#previewModal').classList.add('hidden');
   q('#previewFrame').src = '';
@@ -414,34 +440,12 @@ function closePreview() {
 }
 
 /* ============================================================
-   PARTICLES
-   ============================================================ */
-function spawnParticles() {
-  const container = q('#particles');
-  if (!container) return;
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.cssText = `
-      left:${Math.random() * 100}%;
-      animation-duration:${8 + Math.random() * 12}s;
-      animation-delay:${Math.random() * 10}s;
-      opacity:${0.3 + Math.random() * 0.5};
-      background:${Math.random() > 0.5 ? 'var(--cyan)' : 'var(--violet)'};
-      width:${1 + Math.random() * 2}px;
-      height:${1 + Math.random() * 2}px;
-    `;
-    container.appendChild(p);
-  }
-}
-
-/* ============================================================
    LOADING ANIMATION
    ============================================================ */
 async function animateLoading() {
   const label = qAny('#loaderMsg', '#loadingLabel');
-  for (let i = 0; i < state.loadingStages.length; i++) {
-    if (label) label.textContent = state.loadingStages[i];
+  for (const stage of state.loadingStages) {
+    if (label) label.textContent = stage;
     await new Promise(r => setTimeout(r, 350));
   }
 }
@@ -451,14 +455,12 @@ async function animateLoading() {
    ============================================================ */
 async function init() {
   loadTheme();
-  spawnParticles();
 
   const loadingEl = q('#loadingState');
-  loadingEl.classList.remove('hidden');
+  if (loadingEl) loadingEl.classList.remove('hidden');
 
   const loadAnim = animateLoading();
 
-  /* Fetch data */
   const [data] = await Promise.all([fetchAppsJson(), loadAnim]);
   let apps = data?.apps || [];
   if (!apps.length) apps = await scanAppsFolder();
@@ -466,8 +468,7 @@ async function init() {
   state.apps     = mergeApps(apps);
   state.filtered = state.apps;
 
-  /* Hide loading */
-  loadingEl.classList.add('hidden');
+  if (loadingEl) loadingEl.classList.add('hidden');
 
   fillCategories();
   renderStats();
@@ -480,19 +481,19 @@ async function init() {
    EVENT LISTENERS
    ============================================================ */
 
-/* Theme toggle */
-q('#themeToggle').addEventListener('click', toggleTheme);
+/* Theme */
+q('#themeToggle')?.addEventListener('click', toggleTheme);
 
 /* Search */
-q('#searchInput').addEventListener('input', applyFilters);
-q('#searchInput').addEventListener('blur', () => {
-  setTimeout(() => { q('#suggestions').innerHTML = ''; }, 200);
+q('#searchInput')?.addEventListener('input', applyFilters);
+q('#searchInput')?.addEventListener('blur', () => {
+  setTimeout(() => { if (q('#suggestions')) q('#suggestions').innerHTML = ''; }, 200);
 });
 
 /* Category filter */
-q('#categoryFilter').addEventListener('change', applyFilters);
+q('#categoryFilter')?.addEventListener('change', applyFilters);
 
-/* Favorites filter toggle */
+/* Favorites toggle */
 qAny('#favToggle', '#favFilterBtn')?.addEventListener('click', () => {
   state.favOnly = !state.favOnly;
   qAny('#favToggle', '#favFilterBtn')?.setAttribute('aria-pressed', String(state.favOnly));
@@ -500,51 +501,53 @@ qAny('#favToggle', '#favFilterBtn')?.addEventListener('click', () => {
 });
 
 /* Modal close */
-q('#closeModal').addEventListener('click', closePreview);
-q('#previewModal').addEventListener('click', e => {
-  if (e.target === q('#previewModal') || e.target.classList.contains('modal-scrim') || e.target.id === 'modalScrim') closePreview();
+q('#closeModal')?.addEventListener('click', closePreview);
+q('#previewModal')?.addEventListener('click', e => {
+  if (e.target === q('#previewModal') ||
+      e.target.classList.contains('modal-scrim') ||
+      e.target.id === 'modalScrim') {
+    closePreview();
+  }
 });
 
 /* Install FAB */
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   state.deferredPrompt = e;
-  q('#installBtn').classList.remove('hidden');
+  q('#installBtn')?.classList.remove('hidden');
 });
-q('#installBtn').addEventListener('click', async () => {
+q('#installBtn')?.addEventListener('click', async () => {
   if (!state.deferredPrompt) return;
   state.deferredPrompt.prompt();
   await state.deferredPrompt.userChoice;
   state.deferredPrompt = null;
-  q('#installBtn').classList.add('hidden');
+  q('#installBtn')?.classList.add('hidden');
 });
 
 /* Keyboard shortcuts */
 window.addEventListener('keydown', e => {
-  const tag = document.activeElement?.tagName;
+  const tag     = document.activeElement?.tagName;
   const isInput = tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA';
 
   if (e.key === '/' && !isInput) {
     e.preventDefault();
-    q('#searchInput').focus();
-    q('#searchInput').select();
+    q('#searchInput')?.focus();
+    q('#searchInput')?.select();
   }
   if (e.key.toLowerCase() === 't' && !isInput) toggleTheme();
-  if (e.key.toLowerCase() === 'f' && !isInput) {
-    qAny('#favToggle', '#favFilterBtn')?.click();
-  }
+  if (e.key.toLowerCase() === 'f' && !isInput) qAny('#favToggle', '#favFilterBtn')?.click();
   if (e.key === 'Escape') {
     closePreview();
-    q('#searchInput').blur();
-    q('#suggestions').innerHTML = '';
+    q('#searchInput')?.blur();
+    if (q('#suggestions')) q('#suggestions').innerHTML = '';
   }
 });
 
-/* Topbar scroll shadow */
+/* Navbar scroll shadow */
 window.addEventListener('scroll', () => {
   const bar = qAny('#navbar', '#topbar');
   if (!bar) return;
-  bar.style.boxShadow = window.scrollY > 10 ? '0 4px 30px rgba(0,0,0,0.4)' : '';
+  bar.style.boxShadow = window.scrollY > 10 ? '0 4px 30px rgba(0,0,0,0.45)' : '';
 }, { passive: true });
 
 /* Service Worker */
@@ -554,5 +557,5 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* Start */
+/* ── Go ── */
 init();
