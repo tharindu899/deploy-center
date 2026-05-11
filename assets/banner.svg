@@ -1,0 +1,6 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600'>
+<defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop stop-color='#0f172a'/><stop offset='1' stop-color='#312e81'/></linearGradient></defs>
+<rect width='1200' height='600' fill='url(#bg)'/>
+<text x='80' y='250' fill='white' font-size='86' font-family='Arial' font-weight='700'>Deploy Center</text>
+<text x='80' y='330' fill='#cbd5e1' font-size='38' font-family='Arial'>Modern Web Hub Dashboard</text>
+</svg>

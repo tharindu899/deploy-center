@@ -1,0 +1,5 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'>
+<rect width='640' height='360' fill='#0f172a'/><rect x='20' y='20' width='600' height='320' rx='20' fill='#1e293b'/>
+<text x='40' y='110' fill='#93c5fd' font-size='42' font-family='Arial' font-weight='700'>unlock-manager</text>
+<text x='40' y='170' fill='#e2e8f0' font-size='24' font-family='Arial'>Deploy Center Preview</text>
+</svg>
