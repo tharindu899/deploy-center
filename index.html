@@ -3,55 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#050b18" />
-  <meta name="description" content="Deploy Center – Modern Web Hub Dashboard by tharindu899" />
-  <title>Deploy Center • Web Hub</title>
+  <meta name="theme-color" content="#0e0c0a" />
+  <meta name="description" content="Deploy Center — Premium Web Hub by tharindu899" />
+  <title>Deploy Center</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- Background layers -->
-  <div class="bg-space"></div>
-  <div class="bg-grid"></div>
-  <div class="bg-scanlines"></div>
-  <div class="particles" id="particles"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true"></div>
 
   <!-- NAVBAR -->
-  <header class="topbar" id="topbar">
-    <div class="brand">
-      <div class="logo-mark">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="24,4 44,36 4,36" fill="none" stroke="url(#lg1)" stroke-width="2.5"/>
-          <polygon points="24,14 36,34 12,34" fill="url(#lg2)" opacity=".3"/>
-          <defs>
-            <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
-              <stop stop-color="#00f5ff"/>
-              <stop offset="1" stop-color="#bf5af2"/>
-            </linearGradient>
-            <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">
-              <stop stop-color="#00f5ff"/>
-              <stop offset="1" stop-color="#bf5af2"/>
-            </linearGradient>
-          </defs>
+  <header class="navbar" id="navbar">
+    <div class="nb-left">
+      <div class="nb-logo">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <polygon points="16,2 30,28 2,28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          <polygon points="16,11 24,27 8,27" fill="currentColor" opacity="0.4"/>
         </svg>
       </div>
-      <div class="brand-text">
-        <span class="brand-title">DEPLOY CENTER</span>
-        <span class="brand-sub">tharindu899 / deploy-center</span>
+      <div>
+        <div class="nb-name">Deploy Center</div>
+        <div class="nb-slug">tharindu899 / deploy-center</div>
       </div>
     </div>
-
-    <div class="top-actions">
-      <button id="themeToggle" class="icon-btn" title="Toggle Theme (T)" aria-label="Toggle Theme">
-        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="nb-right">
+      <span class="live-badge"><i class="live-dot"></i>Live</span>
+      <button id="themeToggle" class="nb-icon-btn" title="Toggle theme  T" aria-label="Toggle theme">
+        <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="hidden">
+          <circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/>
+          <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/><line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
+          <line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/><line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
+        </svg>
       </button>
-      <a class="icon-btn" href="https://github.com/tharindu899/deploy-center" target="_blank" rel="noopener" title="GitHub Repo" aria-label="GitHub">
+      <a class="nb-icon-btn" href="https://github.com/tharindu899/deploy-center" target="_blank" rel="noopener" aria-label="GitHub">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
         </svg>
@@ -59,199 +51,174 @@
     </div>
   </header>
 
-  <!-- HERO BANNER -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-badge"><span class="pulse-dot"></span> LIVE SYSTEM</div>
-      <h1 class="hero-title">WEB HUB<br><span class="gradient-text">COMMAND CENTER</span></h1>
-      <p class="hero-desc">Your personal app deployment dashboard. Auto-detected from GitHub — browse, preview, and launch.</p>
+  <!-- MASTHEAD -->
+  <section class="masthead">
+    <div class="mast-content">
+      <p class="mast-eyebrow">— Web Hub Dashboard</p>
+      <h1 class="mast-heading">
+        <em>Your Apps,</em><br>One Place<span class="gold-stop">.</span>
+      </h1>
+      <p class="mast-sub">Automatically discovers every app in your repository. Browse, preview, and deploy with a single click.</p>
     </div>
-    <div class="hero-visual">
-      <div class="orbit-ring ring1"></div>
-      <div class="orbit-ring ring2"></div>
-      <div class="orbit-ring ring3"></div>
-      <div class="orbit-dot dot1"></div>
-      <div class="orbit-dot dot2"></div>
-    </div>
+    <hr class="mast-rule" />
   </section>
 
-  <main class="container">
+  <main class="main-wrap">
 
-    <!-- STATS -->
-    <section class="stats-grid" id="stats" aria-label="Dashboard Statistics"></section>
+    <!-- STATS BENTO -->
+    <section class="bento" id="stats" aria-label="Statistics"></section>
 
     <!-- TOOLBAR -->
-    <section class="toolbar" aria-label="Search and Filter">
+    <div class="toolbar">
       <div class="search-wrap">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <svg class="s-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l3.5 3.5" stroke-linecap="round"/>
         </svg>
-        <input id="searchInput" type="search" placeholder="Search apps, categories, tags…  [ / ]" autocomplete="off" spellcheck="false" />
-        <kbd class="shortcut-hint">/</kbd>
-        <ul id="suggestions" class="suggestions" role="listbox" aria-label="Search suggestions"></ul>
+        <input id="searchInput" type="search" placeholder="Search by name, category, tag…" autocomplete="off" />
+        <kbd class="search-kbd">/</kbd>
+        <ul id="suggestions" class="suggestions-box" role="listbox"></ul>
       </div>
-      <div class="filter-group">
-        <select id="categoryFilter" aria-label="Filter by category">
-          <option value="all">⬡ All Categories</option>
-        </select>
-        <button id="favFilterBtn" class="filter-btn" title="Show Favorites Only" aria-pressed="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-          Favorites
-        </button>
-      </div>
-    </section>
-
-    <!-- LOADING SKELETON -->
-    <div id="loadingState" class="loading-state">
-      <div class="skeleton-grid">
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-      </div>
-      <div class="loading-text">
-        <span class="loading-label" id="loadingLabel">Scanning repositories…</span>
-        <div class="loading-bar"><div class="loading-fill" id="loadingFill"></div></div>
-      </div>
+      <select id="categoryFilter" aria-label="Category"></select>
+      <button id="favToggle" class="saved-btn" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        Saved
+      </button>
     </div>
 
-    <!-- RECENT APPS -->
-    <section id="recentSection" class="section-block hidden" aria-label="Recently Opened Apps">
-      <div class="section-header">
-        <h2><span class="section-icon">⏱</span> Recent</h2>
-        <span class="section-count" id="recentCount"></span>
+    <!-- LOADING -->
+    <div id="loadingState" class="loading-wrap">
+      <div class="skel-grid">
+        <div class="skel"></div><div class="skel"></div>
+        <div class="skel"></div><div class="skel"></div>
+        <div class="skel"></div><div class="skel"></div>
       </div>
-      <div id="recentGrid" class="cards-grid horizontal-scroll"></div>
+      <p class="loading-msg" id="loaderMsg">Contacting GitHub…</p>
+    </div>
+
+    <!-- RECENT -->
+    <section id="recentSec" class="block hidden">
+      <div class="block-head">
+        <span class="block-tag">Recently Opened</span>
+        <span class="block-count" id="recentCount"></span>
+      </div>
+      <div id="recentRow" class="horizontal-row"></div>
     </section>
 
-    <!-- FAVORITES -->
-    <section id="favSection" class="section-block hidden" aria-label="Favorite Apps">
-      <div class="section-header">
-        <h2><span class="section-icon">★</span> Favorites</h2>
-        <span class="section-count" id="favCount"></span>
+    <!-- SAVED -->
+    <section id="savedSec" class="block hidden">
+      <div class="block-head">
+        <span class="block-tag">Saved</span>
+        <span class="block-count" id="savedCount"></span>
       </div>
-      <div id="favGrid" class="cards-grid horizontal-scroll"></div>
+      <div id="savedRow" class="horizontal-row"></div>
     </section>
 
     <!-- ALL APPS -->
-    <section class="section-block" aria-label="All Apps">
-      <div class="section-header">
-        <h2><span class="section-icon">⬡</span> All Apps</h2>
-        <span class="section-count" id="appsCount"></span>
+    <section class="block">
+      <div class="block-head">
+        <span class="block-tag">All Apps</span>
+        <span class="block-count" id="allCount"></span>
       </div>
-      <div id="appsGrid" class="cards-grid main-grid"></div>
+      <div id="appsGrid" class="apps-grid"></div>
       <div id="emptyState" class="empty-state hidden">
-        <div class="empty-icon">⬡</div>
-        <p>No apps match your search.</p>
-        <button onclick="document.getElementById('searchInput').value=''; window.applyFilters();" class="btn-reset">Clear Search</button>
+        <span class="empty-glyph">∅</span>
+        <p>Nothing matched your search.</p>
+        <button class="empty-clear" onclick="document.getElementById('searchInput').value='';window._filter()">Clear</button>
       </div>
     </section>
 
   </main>
 
-  <!-- FAB INSTALL BUTTON -->
-  <button id="installBtn" class="install-fab hidden" aria-label="Install App as PWA">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <span class="footer-mark">DC</span>
+    <span class="footer-text">Deploy Center &mdash; tharindu899</span>
+    <div class="footer-keys">
+      <kbd>/</kbd>search
+      <kbd>T</kbd>theme
+      <kbd>F</kbd>saved
+      <kbd>Esc</kbd>close
+    </div>
+  </footer>
+
+  <!-- INSTALL FAB -->
+  <button id="installBtn" class="install-fab hidden" aria-label="Install PWA">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
     </svg>
-    <span>Install</span>
+    Install
   </button>
 
-  <!-- KEYBOARD SHORTCUTS HINT -->
-  <div class="shortcuts-bar" id="shortcutsBar">
-    <span><kbd>/</kbd> Search</span>
-    <span><kbd>T</kbd> Theme</span>
-    <span><kbd>F</kbd> Favorites</span>
-    <span><kbd>Esc</kbd> Close</span>
-  </div>
-
   <!-- PREVIEW MODAL -->
-  <div id="previewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
-    <div class="modal-backdrop"></div>
+  <div id="previewModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-scrim" id="modalScrim"></div>
     <div class="modal-panel">
-      <div class="modal-header">
-        <div class="modal-title-wrap">
-          <span class="modal-chip" id="previewCategory"></span>
-          <h3 id="previewTitle">Preview</h3>
+      <div class="modal-bar">
+        <div class="modal-info">
+          <span class="modal-badge" id="modalBadge"></span>
+          <span class="modal-title" id="previewTitle"></span>
         </div>
-        <div class="modal-controls">
-          <a id="previewOpenLink" class="btn-modal-open" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
+        <div class="modal-btns">
+          <a id="modalLink" class="modal-open" target="_blank" rel="noopener">
             Open
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
           </a>
-          <button id="closeModal" class="btn-modal-close" aria-label="Close preview">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button id="closeModal" class="modal-x" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
           </button>
         </div>
       </div>
-      <div class="modal-frame-wrap">
-        <div class="frame-loading" id="frameLoading">
-          <div class="frame-spinner"></div>
-          <span>Loading preview…</span>
+      <div class="modal-frame">
+        <div class="frame-loader" id="frameLoader">
+          <div class="frame-spin"></div>
         </div>
-        <iframe id="previewFrame" loading="lazy" title="App Preview" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+        <iframe id="previewFrame" title="Preview" sandbox="allow-scripts allow-same-origin allow-forms" loading="lazy"></iframe>
       </div>
     </div>
   </div>
 
-  <!-- APP CARD TEMPLATE -->
-  <template id="cardTemplate">
+  <!-- CARD TEMPLATE -->
+  <template id="cardTpl">
     <article class="app-card">
-      <div class="card-glow"></div>
-      <div class="card-thumb-wrap">
-        <img class="thumb" alt="" loading="lazy" />
-        <div class="thumb-overlay">
-          <button class="btn-preview-hover">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+      <div class="card-thumb">
+        <img class="thumb-img" alt="" loading="lazy" />
+        <div class="thumb-hover">
+          <button class="thumb-btn preview-btn-hover">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
             Preview
           </button>
         </div>
-        <div class="card-category-chip category-chip"></div>
+        <span class="cat-pill"></span>
       </div>
       <div class="card-body">
-        <div class="title-row">
+        <div class="card-top">
           <h3 class="card-name"></h3>
-          <button class="fav-btn" title="Toggle favorite" aria-label="Toggle favorite">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="save-btn" aria-label="Save">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
           </button>
         </div>
         <p class="card-desc"></p>
         <div class="card-meta">
-          <div class="stars" aria-label="Rating"></div>
-          <span class="version-badge"></span>
-        </div>
-        <div class="visits-row">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="visit-icon">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-          </svg>
-          <span class="visits-label"></span>
+          <div class="stars-row">
+            <span class="stars"></span>
+            <span class="rating-val"></span>
+          </div>
+          <span class="visits"></span>
         </div>
         <div class="card-actions">
-          <a class="btn-open" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            Launch
-          </a>
-          <button class="btn-preview">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-            </svg>
-            Preview
-          </button>
+          <a class="btn-launch" target="_blank" rel="noopener">Launch</a>
+          <button class="btn-prev">Preview</button>
         </div>
+        <div class="card-ver"></div>
       </div>
     </article>
   </template>
