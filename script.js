@@ -34,6 +34,7 @@ const state = {
 /* ── DOM Helpers ── */
 const q  = (s, root = document)  => root.querySelector(s);
 const qa = (s, root = document)  => [...root.querySelectorAll(s)];
+const qAny = (...sels) => sels.map(sel => q(sel)).find(Boolean) || null;
 
 /* ============================================================
    THEME
@@ -218,33 +219,37 @@ function thumbFor(app) {
    BUILD APP CARD
    ============================================================ */
 function buildCard(app, small = false) {
-  const tmpl  = q('#cardTemplate').content.cloneNode(true);
+  const cardTemplate = qAny('#cardTpl', '#cardTemplate');
+  if (!cardTemplate) throw new Error('Card template not found');
+  const tmpl  = cardTemplate.content.cloneNode(true);
   const card  = tmpl.querySelector('.app-card');
   const visits = (getJSON(LS.appVisits, {})[app.slug] || 0);
   const fav   = isFavorite(app.slug);
 
   /* Thumbnail */
-  const img = tmpl.querySelector('.thumb');
+  const img = tmpl.querySelector('.thumb-img, .thumb');
   img.src = thumbFor(app);
   img.alt = `${app.name} thumbnail`;
   img.onerror = () => { img.src = generateThumb(app); };
 
   /* Category chip */
-  const chip = tmpl.querySelector('.card-category-chip');
+  const chip = tmpl.querySelector('.cat-pill, .card-category-chip');
   chip.textContent = app.category || 'App';
   chip.classList.add(catClass(app.category));
 
   /* Text */
   tmpl.querySelector('.card-name').textContent = app.name;
   tmpl.querySelector('.card-desc').textContent = app.description || 'No description.';
-  tmpl.querySelector('.version-badge').textContent = `v${app.version || '1.0.0'}`;
+  const versionNode = tmpl.querySelector('.version-badge, .rating-val');
+  if (versionNode) versionNode.textContent = `v${app.version || '1.0.0'}`;
   tmpl.querySelector('.stars').innerHTML = starRating(app.rating || 4);
-  tmpl.querySelector('.visits-label').textContent = `${visits} visit${visits !== 1 ? 's' : ''}`;
+  const visitsNode = tmpl.querySelector('.visits, .visits-label');
+  if (visitsNode) visitsNode.textContent = `${visits} visit${visits !== 1 ? 's' : ''}`;
 
   /* Favorite */
-  const favBtn = tmpl.querySelector('.fav-btn');
-  if (fav) favBtn.classList.add('is-fav');
-  favBtn.addEventListener('click', (e) => {
+  const favBtn = tmpl.querySelector('.save-btn, .fav-btn');
+  if (favBtn && fav) favBtn.classList.add('is-fav');
+  favBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleFavorite(app.slug);
     favBtn.classList.toggle('is-fav');
@@ -255,17 +260,17 @@ function buildCard(app, small = false) {
   });
 
   /* Open button */
-  const openBtn = tmpl.querySelector('.btn-open');
-  openBtn.href = app.path;
-  openBtn.addEventListener('click', () => {
+  const openBtn = tmpl.querySelector('.btn-launch, .btn-open');
+  if (openBtn) openBtn.href = app.path;
+  openBtn?.addEventListener('click', () => {
     recordVisit(app.slug);
     renderStats();
     renderRecentSection();
-    tmpl.querySelector('.visits-label').textContent = `${visits + 1} visit${visits + 1 !== 1 ? 's' : ''}`;
+    if (visitsNode) visitsNode.textContent = `${visits + 1} visit${visits + 1 !== 1 ? 's' : ''}`;
   });
 
   /* Preview buttons */
-  const previewBtns = tmpl.querySelectorAll('.btn-preview, .btn-preview-hover');
+  const previewBtns = tmpl.querySelectorAll('.btn-prev, .preview-btn-hover, .btn-preview, .btn-preview-hover');
   previewBtns.forEach(btn => btn.addEventListener('click', () => openPreview(app)));
 
   if (small) card.classList.add('card-small');
@@ -305,7 +310,7 @@ function renderGrid(container, apps, small = false) {
 function renderMainApps(apps) {
   const grid   = q('#appsGrid');
   const empty  = q('#emptyState');
-  const count  = q('#appsCount');
+  const count  = qAny('#allCount', '#appsCount');
   grid.innerHTML = '';
   if (apps.length === 0) {
     empty.classList.remove('hidden');
@@ -319,8 +324,8 @@ function renderMainApps(apps) {
 function renderRecentSection() {
   const slugs  = getJSON(LS.recent, []);
   const recent = slugs.map(s => state.apps.find(a => a.slug === s)).filter(Boolean);
-  const sec    = q('#recentSection');
-  const grid   = q('#recentGrid');
+  const sec    = qAny('#recentSec', '#recentSection');
+  const grid   = qAny('#recentRow', '#recentGrid');
   const count  = q('#recentCount');
   if (recent.length === 0) { sec.classList.add('hidden'); return; }
   sec.classList.remove('hidden');
@@ -332,9 +337,9 @@ function renderRecentSection() {
 function renderFavSection() {
   const favs   = getJSON(LS.fav, []);
   const apps   = state.apps.filter(a => favs.includes(a.slug));
-  const sec    = q('#favSection');
-  const grid   = q('#favGrid');
-  const count  = q('#favCount');
+  const sec    = qAny('#savedSec', '#favSection');
+  const grid   = qAny('#savedRow', '#favGrid');
+  const count  = qAny('#savedCount', '#favCount');
   if (apps.length === 0) { sec.classList.add('hidden'); return; }
   sec.classList.remove('hidden');
   grid.innerHTML = '';
@@ -387,13 +392,16 @@ function renderSuggestions(term) {
 function openPreview(app) {
   const modal = q('#previewModal');
   q('#previewTitle').textContent = app.name;
-  q('#previewCategory').textContent = app.category || 'App';
-  q('#previewOpenLink').href = app.path;
-  q('#frameLoading').style.display = 'flex';
+  const badge = qAny('#modalBadge', '#previewCategory');
+  if (badge) badge.textContent = app.category || 'App';
+  const openLink = qAny('#modalLink', '#previewOpenLink');
+  if (openLink) openLink.href = app.path;
+  const frameLoading = qAny('#frameLoader', '#frameLoading');
+  if (frameLoading) frameLoading.style.display = 'flex';
 
   const frame = q('#previewFrame');
   frame.src = '';
-  frame.onload = () => { q('#frameLoading').style.display = 'none'; };
+  frame.onload = () => { if (frameLoading) frameLoading.style.display = 'none'; };
   frame.src = app.path;
 
   modal.classList.remove('hidden');
@@ -431,7 +439,7 @@ function spawnParticles() {
    LOADING ANIMATION
    ============================================================ */
 async function animateLoading() {
-  const label = q('#loadingLabel');
+  const label = qAny('#loaderMsg', '#loadingLabel');
   for (let i = 0; i < state.loadingStages.length; i++) {
     if (label) label.textContent = state.loadingStages[i];
     await new Promise(r => setTimeout(r, 350));
@@ -485,16 +493,16 @@ q('#searchInput').addEventListener('blur', () => {
 q('#categoryFilter').addEventListener('change', applyFilters);
 
 /* Favorites filter toggle */
-q('#favFilterBtn').addEventListener('click', () => {
+qAny('#favToggle', '#favFilterBtn')?.addEventListener('click', () => {
   state.favOnly = !state.favOnly;
-  q('#favFilterBtn').setAttribute('aria-pressed', String(state.favOnly));
+  qAny('#favToggle', '#favFilterBtn')?.setAttribute('aria-pressed', String(state.favOnly));
   applyFilters();
 });
 
 /* Modal close */
 q('#closeModal').addEventListener('click', closePreview);
 q('#previewModal').addEventListener('click', e => {
-  if (e.target === q('#previewModal') || e.target.classList.contains('modal-backdrop')) closePreview();
+  if (e.target === q('#previewModal') || e.target.classList.contains('modal-scrim') || e.target.id === 'modalScrim') closePreview();
 });
 
 /* Install FAB */
@@ -523,7 +531,7 @@ window.addEventListener('keydown', e => {
   }
   if (e.key.toLowerCase() === 't' && !isInput) toggleTheme();
   if (e.key.toLowerCase() === 'f' && !isInput) {
-    q('#favFilterBtn').click();
+    qAny('#favToggle', '#favFilterBtn')?.click();
   }
   if (e.key === 'Escape') {
     closePreview();
@@ -534,15 +542,15 @@ window.addEventListener('keydown', e => {
 
 /* Topbar scroll shadow */
 window.addEventListener('scroll', () => {
-  q('#topbar').style.boxShadow = window.scrollY > 10
-    ? '0 4px 30px rgba(0,0,0,0.4)'
-    : '';
+  const bar = qAny('#navbar', '#topbar');
+  if (!bar) return;
+  bar.style.boxShadow = window.scrollY > 10 ? '0 4px 30px rgba(0,0,0,0.4)' : '';
 }, { passive: true });
 
 /* Service Worker */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
   });
 }
 
