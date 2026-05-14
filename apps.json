@@ -7,7 +7,7 @@
       "category":    "Finance",
       "version":     "1.0.0",
       "rating":      4.7,
-      "path":        "apps/pocket-ledger/index.html",
+      "path":        "apps/budget-manager/index.html",
       "tags":        ["money", "finance", "budget", "tracker"]
     },
     {
