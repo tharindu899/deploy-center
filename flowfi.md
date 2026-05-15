@@ -286,7 +286,7 @@ npm install -g expo-cli eas-cli
 ### Step 4 — Clone Your Repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/flowfi.git
+git clone https://github.com/tharindu899/flowfi.git
 cd flowfi
 npm install
 ```
@@ -363,7 +363,7 @@ Create **two** client IDs:
 
 **Android client ID:**
 - Application type: `Android`
-- Package name: `com.yourname.flowfi`
+- Package name: `com.tharindu899.flowfi`
 - SHA-1 fingerprint: run this in Termux:
 
 ```bash
@@ -376,7 +376,7 @@ keytool -keystore ~/.android/debug.keystore \
 **Web client ID:**
 - Application type: `Web application`
 - Name: `FlowFi Web`
-- Authorized redirect URIs: `https://auth.expo.io/@YOUR_EXPO_USERNAME/flowfi`
+- Authorized redirect URIs: `https://auth.expo.io/@tharindu8999/flowfi`
 
 ### Step 5 — Enable Google Drive Scope
 
@@ -483,7 +483,7 @@ Generate the following files with TypeScript:
 
 1. app.json — Expo config with:
    - name: "FlowFi", slug: "flowfi", version: "1.0.0"
-   - package: "com.yourname.flowfi"
+   - package: "com.tharindu899.flowfi"
    - Android permissions: CAMERA, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE,
      USE_BIOMETRIC, USE_FINGERPRINT, RECEIVE_BOOT_COMPLETED, VIBRATE
    - plugins: expo-font, expo-sqlite, expo-local-authentication, expo-notifications
